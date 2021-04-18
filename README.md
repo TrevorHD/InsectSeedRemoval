@@ -10,3 +10,5 @@ Survival analysis of data from an experiment testing the effects of increased gr
 **Figure1** *(.jpeg)* - Plots of four combinations of warmed/unwarmed parent plants and species *Carduus* *nutans*/*acanthoides*, comparing seed removal between elaiosome present/absent.
 
 **Figure2** *(.jpeg)* - Plots of four combinations of elaiosome present/absent and species *Carduus* *nutans*/*acanthoides*, comparing seed removal between warmed/unwarmed parent plants.
+
+**AntSeedDispersalMS_v1** *(.docx)* - The manuscript for this research.
