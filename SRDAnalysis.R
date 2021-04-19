@@ -1,4 +1,4 @@
-##### Load libraries --------------------------------------------------------------------------------------
+##### Load libraries and data------------------------------------------------------------------------------
 
 # Load libraries
 library(tidyverse)
@@ -6,18 +6,21 @@ library(grid)
 library(gridBase)
 library(httr)
 
+# Load data from private repo
+# Username and password obviously not included for security reasons
+# Note: access to GitHub API with httr has been deprecated and will need to be fixed
+Data <- GET(url = "https://api.github.com/repos/TrevorHD/InsectSeedRemoval/contents/SeedRemovalData.csv",
+            authenticate("email", "password"),
+            accept("application/vnd.github.v3.raw")) %>%  
+  content(as = "parsed", type = "text/csv")
+
+Data <- read.csv("SeedRemovalData.csv")
+
 
 
 
 
 ##### Prepare data for plotting ---------------------------------------------------------------------------
-
-# Load data from private repo
-# Username and password obviously not included for security reasons
-Data <- GET(url = "https://api.github.com/repos/TrevorHD/InsectSeedRemoval/contents/SeedRemovalData.csv",
-            authenticate("email", "password"),
-            accept("application/vnd.github.v3.raw")) %>%  
-              content(as = "parsed", type = "text/csv")
 
 # Sort into the eight different treatment groups
 Data.CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
@@ -37,7 +40,7 @@ na.sd <- function(x){
 na.sem <- function(x){
   na.sd(x)/sqrt(length(x))}
 
-# Function do apply above functions to each treatment group
+# Function to apply above functions to each treatment group
 time.means <- function(df){
   df_means <- apply(df[, 5:ncol(df)], MARGIN = 2, FUN = na.mean)
   df_sd <- apply(df[, 5:ncol(df)], MARGIN = 2, FUN = na.sd)
