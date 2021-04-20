@@ -1,10 +1,11 @@
-##### Load libraries and data------------------------------------------------------------------------------
+##### Load libraries and data -----------------------------------------------------------------------------
 
 # Load libraries
 library(tidyverse)
 library(grid)
 library(gridBase)
 library(httr)
+library(lme4)
 
 # Load data from private repo
 # Username and password obviously not included for security reasons
@@ -14,7 +15,38 @@ Data <- GET(url = "https://api.github.com/repos/TrevorHD/InsectSeedRemoval/conte
             accept("application/vnd.github.v3.raw")) %>%  
   content(as = "parsed", type = "text/csv")
 
+# For now, load data from local copy
 Data <- read.csv("SeedRemovalData.csv")
+names(Data)[1] <- "Depot"
+
+# Create copy of data with treatments and only a few key time points
+Data2 <- Data[, c(1:5, 18, 30, 31, 33)]
+Data2 <- na.omit(Data2)
+
+
+
+
+
+##### Fit GLM to seed removal data ------------------------------------------------------------------------
+
+# Use binomial error structure with logit link function
+# Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
+
+# Fit GLM for seed removal at 6 hours
+Fit6 <- glmer(cbind(25 - Data2$t_6, Data2$t_6) ~ Species + Warmed + Elaiosome + Species:Warmed +
+                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+
+# Fit GLM for seed removal at 12 hours
+Fit12 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
+                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+
+# Fit GLM for seed removal at 24 hours
+Fit24 <- glmer(cbind(25 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
+                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+
+# Fit GLM for seed removal at 12 hours
+Fit48 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
+                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 
 
 
