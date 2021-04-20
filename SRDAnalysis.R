@@ -74,6 +74,7 @@ na.sem <- function(x){
 
 # Function to apply above functions to each treatment group
 time.means <- function(df){
+  df <- select(df, -Block)
   df_means <- apply(df[, 5:ncol(df)], MARGIN = 2, FUN = na.mean)
   df_sd <- apply(df[, 5:ncol(df)], MARGIN = 2, FUN = na.sd)
   df_sem <- apply(df[, 5:ncol(df)], MARGIN = 2, FUN = na.sem)
@@ -211,6 +212,54 @@ grid.text(label = c("Warmed", "Unwarmed", "Warmed", "Unwarmed"), x = c(0.408, 0.
 grid.segments(x0 = c(0.385, 0.385, 0.886, 0.886), y0 = c(0.925, 0.910, 0.925, 0.910), 
               x1 = c(0.400, 0.400, 0.901, 0.901), y1 = c(0.925, 0.910, 0.925, 0.910),
               gp = gpar(col = rep(c("red", "blue"), 2), lty = rep(1, 4), lwd = rep(2, 4)))
+
+# Deactivate grid layout; finalise graphics save
+popViewport()
+dev.off()
+
+
+
+
+
+##### Plot CN vs CA ---------------------------------------------------------------------------------------
+
+# Prepare graphics device
+jpeg(filename = "Figure3.jpeg", width = 2800, height = 2000, units = "px")
+
+# Create blank page
+grid.newpage()
+plot.new()
+
+# Set grid layout and activate it
+gly <- grid.layout(1000, 1400)
+pushViewport(viewport(layout = gly))
+
+# E+ Unwarmed: CN (black) v CA (grey)
+print(surv.plots(Data.CA_NW_YE, Data.CN_NW_YE, "grey", "black", bottom = FALSE),
+      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:675))
+
+# E+ Warmed: CN (black) v CA (grey)
+print(surv.plots(Data.CA_YW_YE, Data.CN_YW_YE, "grey", "black", bottom = TRUE),
+      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:675))
+
+# E- Unwarmed: CN (black) v CA (grey)
+print(surv.plots(Data.CA_NW_NE, Data.CN_NW_NE, "grey", "black", bottom = FALSE),
+      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 725:1375))
+
+# E- Warmed: CN (black) v CA (grey)
+print(surv.plots(Data.CA_YW_NE, Data.CN_YW_NE, "grey", "black", bottom = TRUE),
+      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 725:1375))
+
+# Create figure labels
+grid.text(label = c("E+ Unwarmed", "E+ Warmed", "E- Unwarmed", "E- Warmed"), 
+          x = c(0.385, 0.385, 0.886, 0.886), y = c(0.955, 0.480, 0.955, 0.480), hjust = 0, gp = gpar(cex = 3))
+
+# Create legend
+grid.text(label = c("CN", "CA", "CN", "CA"), x = c(0.408, 0.408, 0.909, 0.909), 
+          y = c(0.925, 0.910, 0.925, 0.910), hjust = 0, gp = gpar(cex = 2.4))
+grid.segments(x0 = c(0.385, 0.385, 0.886, 0.886), y0 = c(0.925, 0.910, 0.925, 0.910), 
+              x1 = c(0.400, 0.400, 0.901, 0.901), y1 = c(0.925, 0.910, 0.925, 0.910),
+              gp = gpar(col = rep(c("black", "grey"), 2), lty = rep(1, 4), lwd = rep(2, 4)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
