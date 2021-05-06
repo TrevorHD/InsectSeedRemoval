@@ -6,6 +6,7 @@ library(grid)
 library(gridBase)
 library(httr)
 library(lme4)
+library(lmtest)
 
 # Load data from private repo
 # Username and password obviously not included for security reasons
@@ -29,26 +30,45 @@ Data2 <- na.omit(Data2)
 
 ##### Fit GLM to seed removal data ------------------------------------------------------------------------
 
+# Total number of seeds removed after a given time
+1 - sum(Data2[, 7])/(nrow(Data2)*25) # 12h
+1 - sum(Data2[, 8])/(nrow(Data2)*25) # 24h
+1 - sum(Data2[, 9])/(nrow(Data2)*25) # 48h
+
 # Use binomial error structure with logit link function
 # Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
 
 # Fit GLM for seed removal at 6 hours
 Fit6 <- glmer(cbind(25 - Data2$t_6, Data2$t_6) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+              Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit6)
 
-# Fit GLM for seed removal at 12 hours
+# Fit GLM for seed removal at 12 hours; remove all non-significant interaction terms
 Fit12 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+               Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit12)
+Fit12.1 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Elaiosome +
+                 Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit12.1)
+lrtest(Fit12.1, Fit12)
 
 # Fit GLM for seed removal at 24 hours
 Fit24 <- glmer(cbind(25 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
                  Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit24)
 
-# Fit GLM for seed removal at 12 hours
+# Fit GLM for seed removal at 12 hours; remove all non-significant interaction terms
 Fit48 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
                  Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-
-
+summary(Fit48)
+Fit48.1 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Elaiosome + 
+                 Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit48.1)
+lrtest(Fit48.1, Fit48)
+Fit48.2 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Elaiosome + 
+                 (1 | Block), data = Data2, family = "binomial")
+summary(Fit48.2)
+lrtest(Fit48.2, Fit48.1)
 
 
 
