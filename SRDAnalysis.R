@@ -30,10 +30,15 @@ Data2 <- na.omit(Data2)
 
 ##### Fit GLM to seed removal data ------------------------------------------------------------------------
 
-# Total number of seeds removed after a given time
-1 - sum(Data2[, 7])/(nrow(Data2)*25) # 12h
-1 - sum(Data2[, 8])/(nrow(Data2)*25) # 24h
-1 - sum(Data2[, 9])/(nrow(Data2)*25) # 48h
+# Total proportion of seeds removed after a given time
+1 - mean(na.omit(Data$t_12))/25 # 12h
+1 - mean(na.omit(Data$t_24))/25 # 24h
+1 - mean(na.omit(Data$t_48))/25 # 48h
+
+# Proportion of seeds removed after a given time for warmed CN E+
+1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_12))/25 # 12h
+1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24))/25 # 24h
+1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48))/25 # 48h
 
 # Use binomial error structure with logit link function
 # Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
@@ -69,6 +74,14 @@ Fit48.2 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaioso
                  (1 | Block), data = Data2, family = "binomial")
 summary(Fit48.2)
 lrtest(Fit48.2, Fit48.1)
+
+# Model response for proportion of seeds removed after a given time for warmed CN E+
+# Note: use inverse logit exp(x)/(1 + exp(x)) to transform these values to proportions
+predict(Fit12.1, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 12hr
+predict(Fit24, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA)   # 24hr
+predict(Fit48.2, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 48hr
+
+
 
 
 
