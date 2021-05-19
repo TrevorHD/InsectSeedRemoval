@@ -8,15 +8,7 @@ library(httr)
 library(lme4)
 library(lmtest)
 
-# Load data from private repo
-# Username and password obviously not included for security reasons
-# Note: access to GitHub API with httr has been deprecated and will need to be fixed
-Data <- GET(url = "https://api.github.com/repos/TrevorHD/InsectSeedRemoval/contents/SeedRemovalData.csv",
-            authenticate("email", "password"),
-            accept("application/vnd.github.v3.raw")) %>%  
-  content(as = "parsed", type = "text/csv")
-
-# For now, load data from local copy
+# Load data from local copy of CSV
 Data <- read.csv("SeedRemovalData.csv")
 names(Data)[1] <- "Depot"
 
@@ -40,6 +32,11 @@ Data2 <- na.omit(Data2)
 1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24))/25 # 24h
 1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48))/25 # 48h
 
+# Proportion of seeds removed after a given time for warmed CN E+
+1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_12))/25 # 12h
+1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_24))/25 # 24h
+1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_48))/25 # 48h
+
 # Use binomial error structure with logit link function
 # Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
 
@@ -62,7 +59,7 @@ Fit24 <- glmer(cbind(25 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome
                  Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit24)
 
-# Fit GLM for seed removal at 12 hours; remove all non-significant interaction terms
+# Fit GLM for seed removal at 48 hours; remove all non-significant interaction terms
 Fit48 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
                  Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit48)
@@ -80,6 +77,12 @@ lrtest(Fit48.2, Fit48.1)
 predict(Fit12.1, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 12hr
 predict(Fit24, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA)   # 24hr
 predict(Fit48.2, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 48hr
+
+# Model response for proportion of seeds removed after a given time for unwarmed CA E-
+# Note: use inverse logit exp(x)/(1 + exp(x)) to transform these values to proportions
+predict(Fit12.1, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 12hr
+predict(Fit24, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA)   # 24hr
+predict(Fit48.2, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 48hr
 
 
 
