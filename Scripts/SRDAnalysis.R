@@ -4,12 +4,11 @@
 library(tidyverse)
 library(grid)
 library(gridBase)
-library(httr)
 library(lme4)
 library(lmtest)
 
 # Load data from local copy of CSV
-Data <- read.csv("../Data/SeedRemovalData.csv")
+Data <- read.csv("Data/SeedRemovalData.csv")
 names(Data)[1] <- "Depot"
 
 # Create copy of data with treatments and only a few key time points
@@ -117,6 +116,26 @@ time.means <- function(df){
   df_new <- data.frame(cbind(c(seq(0, 12, by = 0.5), 24, 36, 48), df_means, df_sem))
   names(df_new) <- c("Time", "Mean", "SEM")
   return(df_new)}
+
+# Function to evaluate whether two survival curves are different
+# Use 2-sided K-S test, with code adapted from ks.test
+time.ks <- function(df1, df2){
+  df1 <- select(df1, -Block)
+  df2 <- select(df2, -Block)
+  df_means1 <- apply(df1[, 5:ncol(df1)], MARGIN = 2, FUN = na.mean)
+  df_means2 <- apply(df2[, 5:ncol(df2)], MARGIN = 2, FUN = na.mean)
+  D <- max(abs((1 - df_means1/25) - (1 - df_means2/25)))
+  n <- length(5:ncol(df1))
+  pkstwo <- function(x, tol = 1e-06, D = D){
+    p <- rep(0, length(x))
+    i <- which(x > 0)
+    if(length(i)){
+      p[i] <- .Call(C_pKS2, p = x[i], tol)}
+    return(p)}
+  pval <- min(1, max(0, 1 - pkstwo(sqrt(n)*D)))
+  return(pval)
+}
+environment(time.ks) <- asNamespace("stats")
 
 # Function to plot survival curves
 surv.plots <- function(df1, df2, colour1, colour2, bottom){
