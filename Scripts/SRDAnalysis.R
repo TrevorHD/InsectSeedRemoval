@@ -137,14 +137,21 @@ time.ks <- function(df1, df2){
   return(pval)}
 environment(time.ks) <- asNamespace("stats")
 
+# Get vector of plotting colours with transparency
+c.alpha <- function(colour){
+  colRGB <- col2rgb(colour)
+  newCol <- rgb(colRGB[1, ], colRGB[2, ], colRGB[3, ], alpha = 145, maxColorValue = 255)
+  return(newCol)}
+PlotColours <- sapply(c("darkgreen", "green", "blue", "red", "black", "grey"), c.alpha)
+
 # Function to plot survival curves
 surv.plots <- function(df1, df2, colour1, colour2, bottom, left, atext){
   
   # Get p-value from K-S test
   pval <- time.ks(df1, df2)
-  ptxt1 <- "paste(italic(p), \" =\")"
-  ptxt2 <- format(round(pval, 3), nsmall = 3)
-  pval <- ifelse(pval < 0.001, "italic(p) < 0.001", paste(ptxt1, ptxt2, sep = "~"))
+  pval <- ifelse(pval < 0.001, "italic(p) < 0.001",
+                 paste("paste(italic(p), \" =\")",
+                       paste0("\"", sprintf("%0.3f", round(pval, 3)), "\""), sep = "~"))
   
   # Plot survival curves
   ggplot() +
@@ -221,31 +228,31 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # CN Unwarmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CN_NW_YE, Data.CN_NW_NE, "darkgreen", "green",
+print(surv.plots(Data.CN_NW_YE, Data.CN_NW_NE, PlotColours[1], PlotColours[2],
                  bottom = FALSE, left = TRUE, atext = "CN Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # CN Warmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CN_YW_YE, Data.CN_YW_NE, "darkgreen", "green",
+print(surv.plots(Data.CN_YW_YE, Data.CN_YW_NE, PlotColours[1], PlotColours[2],
                  bottom = TRUE, left = TRUE, atext = "CN Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # CA Unwarmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CA_NW_YE, Data.CA_NW_NE, "darkgreen", "green",
+print(surv.plots(Data.CA_NW_YE, Data.CA_NW_NE, PlotColours[1], PlotColours[2],
                  bottom = FALSE, left = FALSE, atext = "CA Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # CA Warmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CA_YW_YE, Data.CA_YW_NE, "darkgreen", "green",
+print(surv.plots(Data.CA_YW_YE, Data.CA_YW_NE, PlotColours[1], PlotColours[2],
                  bottom = TRUE, left = FALSE, atext = "CA Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
 # Create legend
 grid.text(label = c("E+", "E-"), x = c(0.934, 0.934), 
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
-grid.segments(x0 = c(0.944, 0.944), y0 = c(0.887, 0.864), 
-              x1 = c(0.961, 0.961), y1 = c(0.887, 0.864),
-              gp = gpar(col = c("darkgreen", "green"), lty = rep(1, 2), lwd = rep(0.6, 2)))
+grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
+              x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
+              gp = gpar(col = c(PlotColours[1], PlotColours[2]), lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -269,31 +276,31 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # CN E+: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CN_YW_YE, Data.CN_NW_YE, "red", "blue",
+print(surv.plots(Data.CN_NW_YE, Data.CN_YW_YE, PlotColours[3], PlotColours[4],
                  bottom = FALSE, left = TRUE, atext = "CN E+"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # CN E-: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CN_YW_NE, Data.CN_NW_NE, "red", "blue",
+print(surv.plots(Data.CN_NW_NE, Data.CN_YW_NE, PlotColours[3], PlotColours[4],
                  bottom = TRUE, left = TRUE, atext = "CN E-"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # CA E+: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CA_YW_YE, Data.CA_NW_YE, "red", "blue",
+print(surv.plots(Data.CA_NW_YE, Data.CA_YW_YE, PlotColours[3], PlotColours[4],
                  bottom = FALSE, left = FALSE, atext = "CA E+"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # CA E: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CA_YW_NE, Data.CA_NW_NE, "red", "blue",
+print(surv.plots(Data.CA_NW_NE, Data.CA_YW_NE, PlotColours[3], PlotColours[4],
                  bottom = TRUE, left = FALSE, atext = "CA E-"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
 # Create legend
-grid.text(label = c("Warmed", "Unwarmed"), x = c(0.934, 0.934), 
+grid.text(label = c("Unwarmed", "Warmed"), x = c(0.934, 0.934), 
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
-grid.segments(x0 = c(0.944, 0.944), y0 = c(0.887, 0.864), 
-              x1 = c(0.961, 0.961), y1 = c(0.887, 0.864),
-              gp = gpar(col = c("red", "blue"), lty = rep(1, 2), lwd = rep(0.6, 2)))
+grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
+              x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
+              gp = gpar(col = c(PlotColours[3], PlotColours[4]), lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -317,31 +324,31 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # E+ Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_NW_YE, Data.CN_NW_YE, "grey", "black",
+print(surv.plots(Data.CA_NW_YE, Data.CN_NW_YE, PlotColours[5], PlotColours[6],
                  bottom = FALSE, left = TRUE, atext = "E+ Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # E+ Warmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_YW_YE, Data.CN_YW_YE, "grey", "black",
+print(surv.plots(Data.CA_YW_YE, Data.CN_YW_YE, PlotColours[5], PlotColours[6],
                  bottom = TRUE, left = TRUE, atext = "E+ Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # E- Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_NW_NE, Data.CN_NW_NE, "grey", "black",
+print(surv.plots(Data.CA_NW_NE, Data.CN_NW_NE, PlotColours[5], PlotColours[6],
                  bottom = FALSE, left = FALSE, atext = "E- Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # E- Warmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_YW_NE, Data.CN_YW_NE, "grey", "black",
+print(surv.plots(Data.CA_YW_NE, Data.CN_YW_NE, PlotColours[5], PlotColours[6],
                  bottom = TRUE, left = FALSE, atext = "E- Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
 # Create legend
 grid.text(label = c("CN", "CA"), x = c(0.934, 0.934), 
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
-grid.segments(x0 = c(0.944, 0.944), y0 = c(0.887, 0.864), 
-              x1 = c(0.961, 0.961), y1 = c(0.887, 0.864),
-              gp = gpar(col = c("black", "grey"), lty = rep(1, 2), lwd = rep(0.6, 2)))
+grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
+              x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
+              gp = gpar(col = c(PlotColours[5], PlotColours[6]), lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
