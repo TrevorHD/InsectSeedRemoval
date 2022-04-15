@@ -9,7 +9,7 @@ library(lme4)
 library(lmtest)
 
 # Load data from local copy of CSV
-Data <- read.csv("../Data/SeedRemovalData.csv")
+Data <- read.csv("Data/SeedRemovalData.csv")
 names(Data)[1] <- "Depot"
 
 # Create copy of data with treatments and only a few key time points
@@ -23,16 +23,19 @@ Data2 <- na.omit(Data2)
 ##### Fit GLM to seed removal data ------------------------------------------------------------------------
 
 # Total proportion of seeds removed after a given time
+1 - mean(na.omit(Data$t_6))/25  # 6h
 1 - mean(na.omit(Data$t_12))/25 # 12h
 1 - mean(na.omit(Data$t_24))/25 # 24h
 1 - mean(na.omit(Data$t_48))/25 # 48h
 
 # Proportion of seeds removed after a given time for warmed CN E+
+1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_6))/25  # 6h
 1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_12))/25 # 12h
 1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24))/25 # 24h
 1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48))/25 # 48h
 
-# Proportion of seeds removed after a given time for warmed CN E+
+# Proportion of seeds removed after a given time for unwarmed CA E-
+1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_6))/25  # 6
 1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_12))/25 # 12h
 1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_24))/25 # 24h
 1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_48))/25 # 48h
@@ -45,14 +48,10 @@ Fit6 <- glmer(cbind(25 - Data2$t_6, Data2$t_6) ~ Species + Warmed + Elaiosome + 
               Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit6)
 
-# Fit GLM for seed removal at 12 hours; remove all non-significant interaction terms
+# Fit GLM for seed removal at 12 hours
 Fit12 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit12)
-Fit12.1 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Elaiosome +
-                 Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-summary(Fit12.1)
-lrtest(Fit12.1, Fit12)
 
 # Fit GLM for seed removal at 24 hours
 Fit24 <- glmer(cbind(25 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
@@ -63,14 +62,6 @@ summary(Fit24)
 Fit48 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
                  Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit48)
-Fit48.1 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Elaiosome + 
-                 Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-summary(Fit48.1)
-lrtest(Fit48.1, Fit48)
-Fit48.2 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Elaiosome + 
-                 (1 | Block), data = Data2, family = "binomial")
-summary(Fit48.2)
-lrtest(Fit48.2, Fit48.1)
 
 # Model response for proportion of seeds removed after a given time for warmed CN E+
 # Note: use inverse logit exp(x)/(1 + exp(x)) to transform these values to proportions
