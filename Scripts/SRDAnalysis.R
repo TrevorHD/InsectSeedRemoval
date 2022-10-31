@@ -9,6 +9,7 @@ library(lmtest)
 
 # Load data from local copy of CSV
 Data <- read.csv("Data/SeedRemovalData.csv")
+Data_SM <- read.csv("Data/SeedMassData.csv")
 names(Data)[1] <- "Depot"
 
 # Create copy of data with treatments and only a few key time points
@@ -345,3 +346,49 @@ grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863),
 popViewport()
 dev.off()
 
+
+
+
+
+##### Examine potential differences in seed mass due to warming -------------------------------------------
+
+# Sort into warmed versus unwarmed groups for each species
+Data_SM_CN_W <- subset(Data_SM, Species == "CN" & Warmed == 1)
+Data_SM_CN_NW <- subset(Data_SM, Species == "CN" & Warmed == 0)
+Data_SM_CA_W <- subset(Data_SM, Species == "CA" & Warmed == 1)
+Data_SM_CA_NW <- subset(Data_SM, Species == "CA" & Warmed == 0)
+
+# Test for equal variance; fail to reject equality of variance between groups
+bartlett.test(rbind(Data_SM_CN_W, Data_SM_CN_NW)$Mass,
+              rbind(Data_SM_CN_W, Data_SM_CN_NW)$Warmed)
+bartlett.test(rbind(Data_SM_CA_W, Data_SM_CA_NW)$Mass,
+              rbind(Data_SM_CA_W, Data_SM_CA_NW)$Warmed)
+
+# Perform t-test with equal variances
+# Significant difference between warmed and unwarmed within each species
+t.test(Data_SM_CN_W$Mass, Data_SM_CN_NW$Mass, alt = "two.sided", var.equal = TRUE)
+t.test(Data_SM_CA_W$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = TRUE)
+
+# Normality assumption holds for each treatment group
+shapiro.test(Data_SM_CN_W$Mass)
+qqnorm(Data_SM_CN_W$Mass)
+qqline(Data_SM_CN_W$Mass)
+shapiro.test(Data_SM_CN_NW$Mass)
+qqnorm(Data_SM_CN_NW$Mass)
+qqline(Data_SM_CN_NW$Mass)
+shapiro.test(Data_SM_CA_W$Mass)
+qqnorm(Data_SM_CA_W$Mass)
+qqline(Data_SM_CA_W$Mass)
+shapiro.test(Data_SM_CA_NW$Mass)
+qqnorm(Data_SM_CA_NW$Mass)
+qqline(Data_SM_CA_NW$Mass)
+
+# Seed mass between species is obviously different
+# Interesting since species effects on mixed model is not really significant
+# Suggests seed mass might be worth looking into, but is probably not sole factor
+bartlett.test(rbind(Data_SM_CN_W, Data_SM_CA_W)$Mass,
+              rbind(Data_SM_CN_W, Data_SM_CA_W)$Species)
+bartlett.test(rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Mass,
+              rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Species)
+t.test(Data_SM_CN_W$Mass, Data_SM_CA_W$Mass, alt = "two.sided", var.equal = FALSE)
+t.test(Data_SM_CN_NW$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = FALSE)
