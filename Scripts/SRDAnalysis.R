@@ -12,9 +12,17 @@ Data <- read.csv("Data/SeedRemovalData.csv")
 Data_SM <- read.csv("Data/SeedMassData.csv")
 names(Data)[1] <- "Depot"
 
+# Remove row 29 since it's completely blank (no data)
+# Interpolate counts using midpoints for the three missing gaps; most reasonable approximation
+# Photos were not found for these specific data points (likely camera malfunction)
+Data <- Data[-29, ]
+Data[25, "t_24"] <- 14
+Data[45, "t_24"] <- 15
+Data[64, "t_7.5"] <- 23
+Data[64, "t_11"] <- 10
+
 # Create copy of data with treatments and only a few key time points
 Data2 <- Data[, c(1:5, 18, 30, 31, 33)]
-Data2 <- na.omit(Data2)
 
 
 
@@ -23,22 +31,22 @@ Data2 <- na.omit(Data2)
 ##### Fit GLM to seed removal data ------------------------------------------------------------------------
 
 # Total proportion of seeds removed after a given time
-1 - mean(na.omit(Data$t_6))/25  # 6h
-1 - mean(na.omit(Data$t_12))/25 # 12h
-1 - mean(na.omit(Data$t_24))/25 # 24h
-1 - mean(na.omit(Data$t_48))/25 # 48h
+1 - mean(Data$t_6)/25  # 6h
+1 - mean(Data$t_12)/25 # 12h
+1 - mean(Data$t_24)/25 # 24h
+1 - mean(Data$t_48)/25 # 48h
 
 # Proportion of seeds removed after a given time for warmed CN E+
-1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_6))/25  # 6h
-1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_12))/25 # 12h
-1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24))/25 # 24h
-1 - mean(na.omit(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48))/25 # 48h
+1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_6)/25  # 6h
+1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_12)/25 # 12h
+1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24)/25 # 24h
+1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48)/25 # 48h
 
 # Proportion of seeds removed after a given time for unwarmed CA E-
-1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_6))/25  # 6
-1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_12))/25 # 12h
-1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_24))/25 # 24h
-1 - mean(na.omit(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_48))/25 # 48h
+1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_6)/25  # 6
+1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_12)/25 # 12h
+1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_24)/25 # 24h
+1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_48)/25 # 48h
 
 # Use binomial error structure with logit link function
 # Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
@@ -93,9 +101,9 @@ Data.CA_NW_NE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 0)
 
 # Functions to take average number (and SD and SEM) of seeds remaining at a given time
 na.mean <- function(x){
-  mean(na.omit(x))}
+  mean(x)}
 na.sd <- function(x){
-  sd(na.omit(x))}
+  sd(x)}
 na.sem <- function(x){
   na.sd(x)/sqrt(length(x))}
 
@@ -392,3 +400,4 @@ bartlett.test(rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Mass,
               rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Species)
 t.test(Data_SM_CN_W$Mass, Data_SM_CA_W$Mass, alt = "two.sided", var.equal = FALSE)
 t.test(Data_SM_CN_NW$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = FALSE)
+
