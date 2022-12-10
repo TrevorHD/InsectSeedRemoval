@@ -57,18 +57,18 @@ Fit6 <- glmer(cbind(25 - Data2$t_6, Data2$t_6) ~ Species + Warmed + Elaiosome + 
 summary(Fit6)
 
 # Fit GLM for seed removal at 12 hours
-Fit12 <- glmer(cbind(25 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
+Fit12 <- glmer(cbind(Data2$t_6 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit12)
 
 # Fit GLM for seed removal at 24 hours
-Fit24 <- glmer(cbind(25 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
+               Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit24)
 
-# Fit GLM for seed removal at 48 hours; remove all non-significant interaction terms
-Fit48 <- glmer(cbind(25 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+# Fit GLM for seed removal at 48 hours; this model does not converge
+Fit48 <- glmer(cbind(Data2$t_24 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
+               Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit48)
 
 # Model response for proportion of seeds removed after a given time for warmed CN E+
