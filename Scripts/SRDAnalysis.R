@@ -6,6 +6,7 @@ library(grid)
 library(gridBase)
 library(lme4)
 library(lmtest)
+library(survival)
 
 # Load data from local copy of CSV
 Data <- read.csv("Data/SeedRemovalData.csv")
@@ -473,4 +474,68 @@ bartlett.test(rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Mass,
               rbind(Data_SM_CN_NW, Data_SM_CA_NW)$Species)
 t.test(Data_SM_CN_W$Mass, Data_SM_CA_W$Mass, alt = "two.sided", var.equal = FALSE)
 t.test(Data_SM_CN_NW$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = FALSE)
+
+
+
+
+
+##### Compare qualitative GLM results with survival analysis [WIP] ----------------------------------------
+
+# If survival analysis is similar, note this in the paper
+# GLM earlier is survival-style model where hazard functions are allowed to change over time
+
+# Construct concise representation of original dataset
+# ToD indicates time of death
+# Cens indicates censor status (1 = dead, 0 = censored and survived until end)
+for(i in 1:nrow(Data)){
+  if(i == 1){
+    df_main <- matrix(ncol = 7, nrow = 0)}
+  row_sub <- Data[i, ]
+  for(j in 7:ncol(Data)){
+    if(j == 7){
+      prevNum <- 25
+      df_sub <- matrix(ncol = 7, nrow = 0)}
+    curNum <- as.numeric(row_sub[j])
+    if(curNum < prevNum){
+      df_sub <- rbind(df_sub, matrix(c(as.numeric(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 1),
+                                     nrow = prevNum - curNum, ncol = 7, byrow = TRUE))}
+    if(j == ncol(Data) & curNum > 0){
+      df_sub <- rbind(df_sub, matrix(c(as.numeric(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 0),
+                                     nrow = curNum, ncol = 7, byrow = TRUE))}
+    prevNum <- curNum}
+  df_main <- rbind(df_main, df_sub)}
+df_main <- data.frame(df_main, stringsAsFactors = FALSE)
+names(df_main) <- c(names(Data)[1:5], "ToD", "Cens")
+df_main$Depot <- as.numeric(df_main$Depot)
+df_main$Block <- as.numeric(df_main$Block)
+df_main$ToD <- as.numeric(df_main$ToD)
+df_main$Cens <- as.numeric(df_main$Cens)
+df_main$Species[df_main$Species == "2"] <- "CN"
+df_main$Species[df_main$Species == "1"] <- "CA"
+DataAlt <- df_main
+
+# Remove temporary variables since they will no longer be used
+remove(df_main, df_sub, row_sub, curNum, prevNum, i, j)
+
+# Proportional hazard
+# Global p-value low, PH probably not good
+Surv_1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + ToD + Warmed:Elaiosome + Warmed:Species +
+                Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
+summary(Surv_1)
+cox.zph(Surv_1)
+plot(cox.zph(Surv_1))
+
+# Exponential hazard
+Surv_2 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
+                  Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt, dist = "exponential")
+summary(Surv_2)
+AIC(Surv_2)
+step(Surv_2)
+
+# Weibull hazard
+Surv_3 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
+                  Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
+summary(Surv_3)
+AIC(Surv_3)
+step(Surv_3)
 
