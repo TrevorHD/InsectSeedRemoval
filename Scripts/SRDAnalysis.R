@@ -91,14 +91,14 @@ predict(Fit48.2, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0)
 ##### Prepare data for plotting ---------------------------------------------------------------------------
 
 # Sort into the eight different treatment groups
-Data.CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
-Data.CN_YW_NE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 0)
-Data.CN_NW_YE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 1)
-Data.CN_NW_NE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 0)
-Data.CA_YW_YE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 1)
-Data.CA_YW_NE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 0)
-Data.CA_NW_YE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 1)
-Data.CA_NW_NE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 0)
+Data_CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
+Data_CN_YW_NE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 0)
+Data_CN_NW_YE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 1)
+Data_CN_NW_NE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 0)
+Data_CA_YW_YE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 1)
+Data_CA_YW_NE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 0)
+Data_CA_NW_YE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 1)
+Data_CA_NW_NE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 0)
 
 # Functions to take average number (and SD and SEM) of seeds remaining at a given time
 na.mean <- function(x){
@@ -214,8 +214,8 @@ surv.plots <- function(df1, df2, colour1, colour2, bottom, left, atext){
   return(graph)}
 
 # Put individual dataframes into a list to plot all survival curves simultaneously
-Data_List <- list(Data.CN_YW_YE, Data.CN_YW_NE, Data.CN_NW_YE, Data.CN_NW_NE,
-                  Data.CA_YW_YE, Data.CA_YW_NE, Data.CA_NW_YE, Data.CA_NW_NE)
+Data_List <- list(Data_CN_YW_YE, Data_CN_YW_NE, Data_CN_NW_YE, Data_CN_NW_NE,
+                  Data_CA_YW_YE, Data_CA_YW_NE, Data_CA_NW_YE, Data_CA_NW_NE)
     
 # Function to plot all survival curves simultaneously
 surv.plotsAll <- function(dfAll, colourAll){
@@ -517,25 +517,25 @@ DataAlt <- df_main
 # Remove temporary variables since they will no longer be used
 remove(df_main, df_sub, row_sub, curNum, prevNum, i, j)
 
-# Proportional hazard
+# Cox proportional hazard
 # Global p-value low, PH probably not good
-Surv_1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + ToD + Warmed:Elaiosome + Warmed:Species +
-                Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
-summary(Surv_1)
-cox.zph(Surv_1)
-plot(cox.zph(Surv_1))
+Surv1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + ToD + Warmed:Elaiosome + Warmed:Species +
+               Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
+summary(Surv1)
+cox.zph(Surv1)
+plot(cox.zph(Surv1))
 
-# Exponential hazard
-Surv_2 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
-                  Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt, dist = "exponential")
-summary(Surv_2)
-AIC(Surv_2)
-step(Surv_2)
+# Accelerated failure/death - exponential hazard
+Surv2 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
+                 Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt, dist = "exponential")
+summary(Surv2)
+AIC(Surv2)
+step(Surv2)
 
-# Weibull hazard
-Surv_3 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
-                  Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
-summary(Surv_3)
-AIC(Surv_3)
-step(Surv_3)
+# Accelerated failure/death - Weibull hazard
+Surv3 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
+                 Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
+summary(Surv3)
+AIC(Surv3)
+step(Surv3)
 
