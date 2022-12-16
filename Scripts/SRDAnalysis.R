@@ -5,8 +5,9 @@ library(tidyverse)
 library(grid)
 library(gridBase)
 library(lme4)
-library(lmtest)
 library(survival)
+library(sjPlot)
+library(sjmisc)
 
 # Load data from local copy of CSV
 Data <- read.csv("Data/SeedRemovalData.csv")
@@ -66,6 +67,12 @@ summary(Fit12)
 Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit24)
+AIC(Fit24)
+# Removing Species:Warmed minimises AIC
+Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome +
+                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+summary(Fit24)
+AIC(Fit24)
 
 # Fit GLM for seed removal at 48 hours; this model does not converge
 Fit48 <- glmer(cbind(Data2$t_24 - Data2$t_48, Data2$t_48) ~ Species + Warmed + Elaiosome + Species:Warmed +
@@ -423,6 +430,86 @@ grid.text(label = c("1", "3", "7", "6", "5", "2", "8", "4"),
 grid.segments(x0 = rep(0.920, 8), y0 = seq(0.945, 0.761, length.out = 8), 
               x1 = rep(0.937, 8), y1 = seq(0.945, 0.761, length.out = 8),
               gp = gpar(col = PlotColours_All, lty = rep(1, 8), lwd = rep(1.1, 8)))
+
+# Deactivate grid layout; finalise graphics save
+popViewport()
+dev.off()
+
+
+
+
+
+##### Marginal effect plots for interactions --------------------------------------------------------------
+
+# Prepare graphics device
+tiff(filename = "FigureS2.tif", width = 2400, height = 3000, units = "px", res = 800, compression = "lzw")
+
+# Create blank page
+grid.newpage()
+plot.new()
+
+# Set grid layout and activate it
+gly <- grid.layout(1500, 1200)
+pushViewport(viewport(layout = gly))
+
+# Set theme and axis objects to modify individual plot formatting
+ip_t1 <- theme(panel.grid.major.x = element_blank(),
+               panel.grid.major.y = element_line(colour = "gray90", size = 0.2),
+               panel.grid.minor.x = element_blank(),
+               panel.grid.minor.y = element_blank(),
+               panel.border = element_rect(colour = "black", fill = NA, size = 0.4),
+               panel.background = element_rect(fill = "white"),
+               axis.text.x = element_text(size = 4),
+               axis.text.y = element_text(size = 4),
+               axis.title.x = element_blank(),
+               axis.title.y = element_text(size = 4.5),
+               axis.ticks = element_line(colour = "black", size = 0.4),
+               axis.ticks.length = unit(0.06, "cm"),
+               plot.title = element_blank(),
+               legend.position = "none")
+ip_t2 <- ip_t1 + theme(axis.text.y = element_blank(),
+                       axis.title.y = element_blank(),
+                       axis.ticks.y = element_blank())
+ip_m1 <- scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 1), 
+                            breaks = c(0, 1), labels = c("E-", "E+"))
+ip_m2 <- scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 1), 
+                            breaks = c(0, 1), labels = c("NW", "W"))
+ip_m3 <- scale_y_continuous(name = "Probability of Removal", expand = c(0.01, 0.01), limits = c(0, 1), 
+                            breaks = seq(0, 1, by = 0.1))
+
+# Marginal plots for Elaiosome:Species interaction  
+print(plot_model(Fit6, type = "pred", terms = c("Elaiosome", "Species"), colors = c("grey", "black")) +
+        ip_m1 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 1:450))
+print(plot_model(Fit12, type = "pred", terms = c("Elaiosome", "Species"), colors = c("grey", "black")) +
+        ip_m1 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 450:825))
+print(plot_model(Fit24, type = "pred", terms = c("Elaiosome", "Species"), colors = c("grey", "black")) +
+        ip_m1 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 825:1200))
+# For CN, removing the elaiosome decreases rate of removal; not as evident for CA
+
+# Marginal plots for Warmed:Species interaction  
+print(plot_model(Fit6, type = "pred", terms = c("Warmed", "Species"), colors = c("grey", "black")) +
+        ip_m2 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 500:1000, layout.pos.col = 1:450))
+print(plot_model(Fit12, type = "pred", terms = c("Warmed", "Species"), colors = c("grey", "black")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 500:1000, layout.pos.col = 450:825))
+
+# Marginal plots for Warmed:Elaiosome interaction  
+print(plot_model(Fit6, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 1000:1500, layout.pos.col = 1:450))
+print(plot_model(Fit12, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1000:1500, layout.pos.col = 450:825))
+print(plot_model(Fit24, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1000:1500, layout.pos.col = 825:1200))
+# When there is no warming, seeds with elaiosomes are more likely to be removed
+# When warming is added, this difference mostly disappears; there is an obvious interaction
+# Warming drastically increases chance of removal E- seeds, but not really for E+
+
+# Create legend
+grid.text(label = c("CN", "CA", "E+", "E-"), x = rep(0.924, 4), 
+          y = c(0.640, 0.620, 0.600, 0.580), hjust = rep(1, 4), gp = gpar(cex = 0.45))
+grid.segments(x0 = rep(0.934, 4), y0 = c(0.640, 0.620, 0.600, 0.580), 
+              x1 = rep(0.961, 4), y1 = c(0.640, 0.620, 0.600, 0.580),
+              gp = gpar(col = c(PlotColours[5], PlotColours[6], PlotColours[1], PlotColours[2]),
+                        lty = rep(1, 4), lwd = rep(1.1, 4)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
