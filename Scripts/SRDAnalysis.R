@@ -70,7 +70,7 @@ summary(Fit24)
 AIC(Fit24)
 # Removing Species:Warmed minimises AIC
 Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
+               Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
 summary(Fit24)
 AIC(Fit24)
 
@@ -90,6 +90,28 @@ predict(Fit48.2, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1)
 predict(Fit12.1, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 12hr
 predict(Fit24, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA)   # 24hr
 predict(Fit48.2, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 48hr
+
+# Models for CN ad CA separately
+Data2_CN <- subset(Data2, Species == "CN")
+Fit6_CN <- glmer(cbind(25 - Data2_CN$t_6, Data2_CN$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome + (1 | Block),
+                 data = Data2_CN, family = "binomial")
+summary(Fit6_CN)
+Fit12_CN <- glmer(cbind(Data2_CN$t_6 - Data2_CN$t_12, Data2_CN$t_12) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                  (1 | Block), data = Data2_CN, family = "binomial")
+summary(Fit12_CN)
+Fit24_CN <- glmer(cbind(Data2_CN$t_12 - Data2_CN$t_24, Data2_CN$t_24) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                  (1 | Block), data = Data2_CN, family = "binomial")
+summary(Fit24_CN)
+Data2_CA <- subset(Data2, Species == "CA")
+Fit6_CA <- glmer(cbind(25 - Data2_CA$t_6, Data2_CA$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome + (1 | Block),
+                 data = Data2_CA, family = "binomial")
+summary(Fit6_CA)
+Fit12_CA <- glmer(cbind(Data2_CA$t_6 - Data2_CA$t_12, Data2_CA$t_12) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                  (1 | Block), data = Data2_CA, family = "binomial")
+summary(Fit12_CA)
+Fit24_CA <- glmer(cbind(Data2_CA$t_12 - Data2_CA$t_24, Data2_CA$t_24) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                  (1 | Block), data = Data2_CA, family = "binomial")
+summary(Fit24_CA)
 
 
 
