@@ -606,10 +606,10 @@ for(i in 1:nrow(Data)){
       df_sub <- matrix(ncol = 7, nrow = 0)}
     curNum <- as.numeric(row_sub[j])
     if(curNum < prevNum){
-      df_sub <- rbind(df_sub, matrix(c(as.numeric(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 1),
+      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 1),
                                      nrow = prevNum - curNum, ncol = 7, byrow = TRUE))}
     if(j == ncol(Data) & curNum > 0){
-      df_sub <- rbind(df_sub, matrix(c(as.numeric(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 0),
+      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 0),
                                      nrow = curNum, ncol = 7, byrow = TRUE))}
     prevNum <- curNum}
   df_main <- rbind(df_main, df_sub)}
@@ -617,10 +617,10 @@ df_main <- data.frame(df_main, stringsAsFactors = FALSE)
 names(df_main) <- c(names(Data)[1:5], "ToD", "Cens")
 df_main$Depot <- as.numeric(df_main$Depot)
 df_main$Block <- as.numeric(df_main$Block)
+df_main$Warmed <- as.numeric(df_main$Warmed)
+df_main$Elaiosome <- as.numeric(df_main$Elaiosome)
 df_main$ToD <- as.numeric(df_main$ToD)
 df_main$Cens <- as.numeric(df_main$Cens)
-df_main$Species[df_main$Species == "2"] <- "CN"
-df_main$Species[df_main$Species == "1"] <- "CA"
 DataAlt <- df_main
 
 # Remove temporary variables since they will no longer be used
@@ -628,7 +628,7 @@ remove(df_main, df_sub, row_sub, curNum, prevNum, i, j)
 
 # Cox proportional hazard
 # Global p-value low, PH probably not good
-Surv1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + ToD + Warmed:Elaiosome + Warmed:Species +
+Surv1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species  + Warmed:Elaiosome + Warmed:Species +
                Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
 summary(Surv1)
 cox.zph(Surv1)
