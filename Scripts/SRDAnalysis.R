@@ -560,6 +560,11 @@ print(plot_model(Fit24, type = "pred", terms = c("Warmed", "Elaiosome"), colors 
 # When warming is added, this difference mostly disappears; there is an obvious interaction
 # Warming drastically increases chance of removal E- seeds, but not really for E+
 
+# Create plot labels
+grid.text(label = c("t=6", "t=12", "t=24", "t=6", "t=12", "t=6", "t=12", "t=24"),
+          x = c(0.335, 0.650, 0.961, 0.335, 0.650, 0.335, 0.650, 0.961), 
+          y = c(rep(0.962, 3), rep(0.630, 2), rep(0.296, 3)), hjust = rep(1, 8), gp = gpar(cex = 0.45))
+
 # Create legend
 grid.text(label = c("CN", "CA", "E+", "E-"), x = rep(0.924, 4), 
           y = c(0.640, 0.620, 0.600, 0.580), hjust = rep(1, 4), gp = gpar(cex = 0.45))
