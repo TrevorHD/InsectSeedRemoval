@@ -496,7 +496,7 @@ dev.off()
 
 
 
-##### Marginal effect plots for interactions --------------------------------------------------------------
+##### Marginal effect plots for interactions (species not separate) ---------------------------------------
 
 # Prepare graphics device
 tiff(filename = "FigureS2.tif", width = 2400, height = 3000, units = "px", res = 800, compression = "lzw")
@@ -572,6 +572,51 @@ grid.segments(x0 = rep(0.934, 4), y0 = c(0.640, 0.620, 0.600, 0.580),
               x1 = rep(0.961, 4), y1 = c(0.640, 0.620, 0.600, 0.580),
               gp = gpar(col = c(PlotColours[5], PlotColours[6], PlotColours[1], PlotColours[2]),
                         lty = rep(1, 4), lwd = rep(1.1, 4)))
+
+# Deactivate grid layout; finalise graphics save
+popViewport()
+dev.off()
+
+
+
+
+
+##### Marginal effect plots for interactions (species separate) ---------------------------------------
+
+# Prepare graphics device
+tiff(filename = "FigureS3.tif", width = 4000, height = 1500, units = "px", res = 800, compression = "lzw")
+
+# Create blank page
+grid.newpage()
+plot.new()
+
+# Set grid layout and activate it
+gly <- grid.layout(750, 2000)
+pushViewport(viewport(layout = gly))
+
+# Add marginal plots
+print(plot_model(Fit6_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 1:750, layout.pos.col = 1:560))
+print(plot_model(Fit6_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:750, layout.pos.col = 560:1040))
+print(plot_model(Fit12_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:750, layout.pos.col = 1040:1520))
+print(plot_model(Fit24_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+        ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:750, layout.pos.col = 1520:2000))
+# When there is no warming, CA seeds with elaiosomes are more likely to be removed
+# When warming is added, this difference mostly disappears; there is an obvious interaction
+# Warming drastically increases chance of removal E- seeds, but not really for E+
+
+# Create plot labels
+grid.text(label = c("CN, t=6", "CA, t=6", "CA, t=12", "CA, t=24"),
+          x = c(seq(0.260, 0.980, length.out = 4)), y = rep(0.932, 4),
+          hjust = rep(1, 4), gp = gpar(cex = 0.4))
+
+# Create legend
+grid.text(label = c("E-", "E+"), x = rep(0.092, 2),  y = c(0.932, 0.900), hjust = rep(0, 2),
+          gp = gpar(cex = 0.4))
+grid.segments(x0 = rep(0.069, 2), y0 = c(0.932, 0.900), x1 = rep(0.085, 2), y1 = c(0.932, 0.900),
+              gp = gpar(col = c("green", "darkgreen"), lty = rep(1, 2), lwd = rep(1.1, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
