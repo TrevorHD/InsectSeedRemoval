@@ -194,3 +194,13 @@ surv.plotsAll <- function(dfAll, colourAll){
   # Output graph
   return(graph)}  
 
+# List of formatted timesteps for text
+tlist <- c(expression(paste(~italic("t"), " = ", 6)),
+           expression(paste(~italic("t"), " = ", 12)),
+           expression(paste(~italic("t"), " = ", 24)))
+tlistc <- c(expression(paste("CN, ", ~italic("t"), " = ", 6)),
+            expression(paste("CN, ", ~italic("t"), " = ", 12)),
+            expression(paste("CN, ", ~italic("t"), " = ", 24)),
+            expression(paste("CA, ", ~italic("t"), " = ", 6)),
+            expression(paste("CA, ", ~italic("t"), " = ", 12)),
+            expression(paste("CA, ", ~italic("t"), " = ", 24)))

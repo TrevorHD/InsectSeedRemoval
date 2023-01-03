@@ -245,7 +245,7 @@ print(plot_model(Fit24, type = "pred", terms = c("Warmed", "Elaiosome"), colors 
 # Warming drastically increases chance of removal E- seeds, but not really for E+
 
 # Create plot labels
-grid.text(label = rep(c("t=6", "t=12", "t=24"), 3), rep(seq(0.34, 0.966, length.out = 3), 2), 
+grid.text(label = rep(tlist, 3), x = rep(seq(0.34, 0.966, length.out = 3), 2), 
           y = rep(c(0.966, 0.634, 0.300), each = 3), hjust = rep(1, 9), gp = gpar(cex = 0.3))
 
 # Create legend
@@ -299,8 +299,7 @@ print(plot_model(Fit24_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colo
 # Warming drastically increases chance of removal E- seeds, but not really for E+
 
 # Create plot labels
-grid.text(label = c("CN, t=6", "CN, t=12", "CN, t=24", "CA, t=6", "CA, t=12", "CA, t=24"),
-          x = rep(seq(0.34, 0.966, length.out = 3), 2), y = c(rep(0.950, 3), rep(0.450, 3)),
+grid.text(label = tlistc, x = rep(seq(0.34, 0.966, length.out = 3), 2), y = c(rep(0.950, 3), rep(0.450, 3)),
           hjust = rep(1, 6), gp = gpar(cex = 0.3))
 
 # Create legend
