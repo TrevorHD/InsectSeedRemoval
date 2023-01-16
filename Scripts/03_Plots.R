@@ -303,7 +303,7 @@ grid.text(label = tlistc, x = rep(seq(0.34, 0.966, length.out = 3), 2), y = c(re
           hjust = rep(1, 6), gp = gpar(cex = 0.3))
 
 # Create legend
-grid.text(label = c("E-", "E+"), x = rep(0.132, 2),  y = c(0.950, 0.925), hjust = rep(0, 2),
+grid.text(label = c("E+", "E-"), x = rep(0.132, 2),  y = c(0.950, 0.925), hjust = rep(0, 2),
           gp = gpar(cex = 0.3))
 grid.segments(x0 = rep(0.109, 2), y0 = c(0.950, 0.925), x1 = rep(0.125, 2), y1 = c(0.950, 0.925),
               gp = gpar(col = c(PlotColours[1], PlotColours[2]), lty = rep(1, 2), lwd = rep(1.1, 2)))
