@@ -185,7 +185,8 @@ surv.plotsAll <- function(dfAll, colourAll){
           axis.title.x = element_text(size = 6),
           axis.title.y = element_text(size = 6),
           axis.ticks = element_line(colour = "black", size = 0.4),
-          axis.ticks.length = unit(0.06, "cm")) -> graph
+          axis.ticks.length = unit(0.06, "cm"),
+          plot.margin = unit(c(0.01, 0.10, 0.08, 0.10), "cm")) -> graph
   for(i in 2:8){
     graph +
       geom_point(data = time.means(dfAll[[i]]), aes(x = Time, y = Mean), colour = colourAll[i], size = 0.12) +
