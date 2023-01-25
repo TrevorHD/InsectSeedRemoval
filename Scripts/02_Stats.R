@@ -30,51 +30,6 @@
 
 
 
-##### Fit GLM to seed removal data (species not separate) -------------------------------------------------
-
-# Use binomial error structure with logit link function
-# Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
-# Models for 48 hours not fit due to convergence issues
-
-# Fit GLMs for seed removal at 6, 12, and 24 hours
-Fit6 <- glmer(cbind(25 - Data2$t_6, Data2$t_6) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-Fit12 <- glmer(cbind(Data2$t_6 - Data2$t_12, Data2$t_12) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome + Species:Warmed +
-                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-
-# Model selection performed on 24 hour models to minimise AIC
-#Fit24 <- glmer(cbind(Data2$t_12 - Data2$t_24, Data2$t_24) ~ Species + Warmed + Elaiosome +
-#                 Species:Elaiosome + Warmed:Elaiosome + (1 | Block), data = Data2, family = "binomial")
-
-# Check model summaries
-summary(Fit6)
-summary(Fit12)
-summary(Fit24)
-
-# Model response for proportion of seeds removed after a given time for warmed CN E+
-predict(Fit12.1, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 12hr
-predict(Fit24, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA)   # 24hr
-predict(Fit48.2, newdata = data.frame(Species = "CN", Warmed = 1, Elaiosome = 1), re.form = NA) # 48hr
-
-# Model response for proportion of seeds removed after a given time for unwarmed CN E-
-predict(Fit12.1, newdata = data.frame(Species = "CN", Warmed = 0, Elaiosome = 0), re.form = NA) # 12hr
-predict(Fit24, newdata = data.frame(Species = "CN", Warmed = 0, Elaiosome = 0), re.form = NA)   # 24hr
-predict(Fit48.2, newdata = data.frame(Species = "CN", Warmed = 0, Elaiosome = 0), re.form = NA) # 48hr
-
-# Model response for proportion of seeds removed after a given time for unwarmed CA E-
-predict(Fit12.1, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 12hr
-predict(Fit24, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA)   # 24hr
-predict(Fit48.2, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0), re.form = NA) # 48hr
-
-# Note: for the above, use inverse logit exp(x)/(1 + exp(x)) to transform these values to proportions
-# Unwarmed E- CN and CA have similarly low rates of removal, hence them both being included above
-
-
-
-
-
 ##### Fit GLM to seed removal data (species separate) -----------------------------------------------------
 
 # Use binomial error structure with logit link function
