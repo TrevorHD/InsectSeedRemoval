@@ -12,22 +12,22 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # CN Unwarmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CN_NW_YE, Data.CN_NW_NE, PlotColours[1], PlotColours[2],
+print(surv.plots(Data_CN_NW_YE, Data_CN_NW_NE, PlotColours[1], PlotColours[2],
                  bottom = FALSE, left = TRUE, atext = "CN Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # CN Warmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CN_YW_YE, Data.CN_YW_NE, PlotColours[1], PlotColours[2],
+print(surv.plots(Data_CN_YW_YE, Data_CN_YW_NE, PlotColours[1], PlotColours[2],
                  bottom = TRUE, left = TRUE, atext = "CN Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # CA Unwarmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CA_NW_YE, Data.CA_NW_NE, PlotColours[1], PlotColours[2],
+print(surv.plots(Data_CA_NW_YE, Data_CA_NW_NE, PlotColours[1], PlotColours[2],
                  bottom = FALSE, left = FALSE, atext = "CA Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # CA Warmed: E+ (dark green) v E- (light green)
-print(surv.plots(Data.CA_YW_YE, Data.CA_YW_NE, PlotColours[1], PlotColours[2],
+print(surv.plots(Data_CA_YW_YE, Data_CA_YW_NE, PlotColours[1], PlotColours[2],
                  bottom = TRUE, left = FALSE, atext = "CA Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
@@ -60,22 +60,22 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # CN E+: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CN_NW_YE, Data.CN_YW_YE, PlotColours[3], PlotColours[4],
+print(surv.plots(Data_CN_NW_YE, Data_CN_YW_YE, PlotColours[3], PlotColours[4],
                  bottom = FALSE, left = TRUE, atext = "CN E+"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # CN E-: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CN_NW_NE, Data.CN_YW_NE, PlotColours[3], PlotColours[4],
+print(surv.plots(Data_CN_NW_NE, Data_CN_YW_NE, PlotColours[3], PlotColours[4],
                  bottom = TRUE, left = TRUE, atext = "CN E-"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # CA E+: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CA_NW_YE, Data.CA_YW_YE, PlotColours[3], PlotColours[4],
+print(surv.plots(Data_CA_NW_YE, Data_CA_YW_YE, PlotColours[3], PlotColours[4],
                  bottom = FALSE, left = FALSE, atext = "CA E+"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # CA E: Warmed (red) v unwarmed (blue)
-print(surv.plots(Data.CA_NW_NE, Data.CA_YW_NE, PlotColours[3], PlotColours[4],
+print(surv.plots(Data_CA_NW_NE, Data_CA_YW_NE, PlotColours[3], PlotColours[4],
                  bottom = TRUE, left = FALSE, atext = "CA E-"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
@@ -196,22 +196,22 @@ gly <- grid.layout(1000, 1400)
 pushViewport(viewport(layout = gly))
 
 # E+ Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_NW_YE, Data.CN_NW_YE, PlotColours[5], PlotColours[6],
+print(surv.plots(Data_CA_NW_YE, Data_CN_NW_YE, PlotColours[5], PlotColours[6],
                  bottom = FALSE, left = TRUE, atext = "E+ Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
 
 # E+ Warmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_YW_YE, Data.CN_YW_YE, PlotColours[5], PlotColours[6],
+print(surv.plots(Data_CA_YW_YE, Data_CN_YW_YE, PlotColours[5], PlotColours[6],
                  bottom = TRUE, left = TRUE, atext = "E+ Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
 
 # E- Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_NW_NE, Data.CN_NW_NE, PlotColours[5], PlotColours[6],
+print(surv.plots(Data_CA_NW_NE, Data_CN_NW_NE, PlotColours[5], PlotColours[6],
                  bottom = FALSE, left = FALSE, atext = "E- Unwarmed"),
       vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
 
 # E- Warmed: CN (black) v CA (grey)
-print(surv.plots(Data.CA_YW_NE, Data.CN_YW_NE, PlotColours[5], PlotColours[6],
+print(surv.plots(Data_CA_YW_NE, Data_CN_YW_NE, PlotColours[5], PlotColours[6],
                  bottom = TRUE, left = FALSE, atext = "E- Warmed"),
       vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
 
