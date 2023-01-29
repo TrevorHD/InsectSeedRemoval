@@ -1,10 +1,10 @@
 ##### Examine observed removal rates ----------------------------------------------------------------------
 
 # Total proportion of seeds removed after a given time
-1 - mean(Data$t_6)/25  # 6h
-1 - mean(Data$t_12)/25 # 12h
-1 - mean(Data$t_24)/25 # 24h
-1 - mean(Data$t_48)/25 # 48h
+1 - mean(Data$t_6)/25; sd(Data$t_6)/sqrt(length(Data$t_6))/25    # 6h
+1 - mean(Data$t_12)/25; sd(Data$t_12)/sqrt(length(Data$t_12))/25 # 12h
+1 - mean(Data$t_24)/25; sd(Data$t_24)/sqrt(length(Data$t_24))/25 # 24h
+1 - mean(Data$t_48)/25; sd(Data$t_48)/sqrt(length(Data$t_48))/25 # 48h
 
 # Proportion of seeds removed after a given time for warmed CN E+ [highest]
 1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_6)/25  # 6h

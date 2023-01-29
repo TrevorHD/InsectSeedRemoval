@@ -9,7 +9,7 @@ library(survival)
 library(sjPlot)
 library(sjmisc)
 
-# Load data from local copy of CSV; handle NAs
+# Load data from local copy of CSV; handle NAs w/ midpoint
 Data <- read.csv("Data/SeedRemovalData.csv")
 Data_SM <- read.csv("Data/SeedMassData.csv")
 names(Data)[1] <- "Depot"
