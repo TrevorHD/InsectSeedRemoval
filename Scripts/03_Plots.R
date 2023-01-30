@@ -96,10 +96,8 @@ dev.off()
 
 ##### [FS3] Plot all survival curves simultaneously -------------------------------------------------------
 
-# Error bars excluded for plotting clarity
-
 # Prepare graphics device
-tiff(filename = "FigureS1.tif", width = 2800, height = 3200, units = "px", res = 800, compression = "lzw")
+tiff(filename = "Figure S3.tif", width = 2800, height = 3200, units = "px", res = 800, compression = "lzw")
 
 # Create blank page
 grid.newpage()
@@ -110,17 +108,22 @@ gly <- grid.layout(1600, 1400)
 pushViewport(viewport(layout = gly))
 
 # Plot survival curves
-print(surv.plotsAll(Data_List, PlotColours_All), vp = viewport(layout.pos.row = 25:1575, layout.pos.col = 25:1375))
+# Error bars excluded for plotting clarity
+print(surv.plots4(Data_CN_NW_NE, Data_CN_NW_YE, Data_CN_YW_NE, Data_CN_YW_YE,
+                  PlotColours_All[1], PlotColours_All[3], PlotColours_All[5], PlotColours_All[7], TRUE),
+      vp = viewport(layout.pos.row = 25:775, layout.pos.col = 25:1375))
+print(surv.plots4(Data_CA_NW_NE, Data_CA_NW_YE, Data_CA_YW_NE, Data_CA_YW_YE,
+                  PlotColours_All[1], PlotColours_All[3], PlotColours_All[5], PlotColours_All[7], TRUE),
+      vp = viewport(layout.pos.row = 825:1575, layout.pos.col = 25:1375))
 
 # Create legend
-grid.text(label = c("CN W E+ [1]", "CN W E- [2]", "CN NW E+ [3]", "CN NW E- [4]",
-                    "CA W E+ [5]", "CA W E- [6]", "CA NW E+ [7]", "CA NW E- [8]"), x = rep(0.905, 8), 
-          y =  seq(0.945, 0.761, length.out = 8), hjust = rep(1, 8), gp = gpar(cex = 0.45))
-grid.text(label = c("1", "3", "7", "6", "5", "2", "8", "4"),
-          x = c(0.216, 0.312, 0.354, 0.395, 0.408, 0.443, 0.495, 0.546), y = rep(0.420, 8), gp = gpar(cex = 0.45))
-grid.segments(x0 = rep(0.920, 8), y0 = seq(0.945, 0.761, length.out = 8), 
-              x1 = rep(0.937, 8), y1 = seq(0.945, 0.761, length.out = 8),
-              gp = gpar(col = PlotColours_All, lty = rep(1, 8), lwd = rep(1.1, 8)))
+grid.text(label = c("CN W E+", "CN W E-", "CN NW E+", "CN NW E-",
+                    "CA W E+", "CA W E-", "CA NW E+", "CA NW E-"), x = rep(0.940, 8), 
+          y =  c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))),
+                 hjust = rep(1, 8), gp = gpar(cex = 0.45))
+grid.segments(x0 = rep(0.950, 8), y0 = c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))), 
+              x1 = rep(0.965, 8), y1 = c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))),
+              gp = gpar(col = c(PlotColours_All[1], PlotColours_All[3], PlotColours_All[5], PlotColours_All[7]), lty = rep(1, 8), lwd = rep(1.1, 8)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()

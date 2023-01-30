@@ -46,7 +46,7 @@ predict(Fit48.2, newdata = data.frame(Species = "CA", Warmed = 0, Elaiosome = 0)
 ##### [Unused] Marginal effect plots for interactions (species not separate) ------------------------------
 
 # Prepare graphics device
-tiff(filename = "FigureS2.tif", width = 2400, height = 3000, units = "px", res = 800, compression = "lzw")
+tiff(filename = "Figure S4.tif", width = 2400, height = 3000, units = "px", res = 800, compression = "lzw")
 
 # Create blank page
 grid.newpage()
@@ -120,6 +120,96 @@ grid.segments(x0 = rep(0.109, 4), y0 = c(0.966, 0.948, 0.930, 0.912),
               x1 = rep(0.125, 4), y1 = c(0.966, 0.948, 0.930, 0.912),
               gp = gpar(col = c(PlotColours[5], PlotColours[6], PlotColours[1], PlotColours[2]),
                         lty = rep(1, 4), lwd = rep(1.1, 4)))
+
+# Deactivate grid layout; finalise graphics save
+popViewport()
+dev.off()
+
+
+
+
+
+##### [Unused] Plot all 8 survival curves simultaneously --------------------------------------------------
+
+# Put individual dataframes into a list to plot all survival curves simultaneously
+Data_List <- list(Data_CN_YW_YE, Data_CN_YW_NE, Data_CN_NW_YE, Data_CN_NW_NE,
+                  Data_CA_YW_YE, Data_CA_YW_NE, Data_CA_NW_YE, Data_CA_NW_NE)
+
+# Function to plot all survival curves simultaneously
+surv.plotsAll <- function(dfAll, colourAll){
+  
+  # Plot survival curves
+  ggplot() +
+    geom_point(data = time.means(dfAll[[1]]), aes(x = Time, y = Mean),
+               colour = colourAll[1], size = 0.3) +
+    geom_line(data = time.means(dfAll[[1]]), aes(x = Time, y = Mean),
+              colour = colourAll[1], size = 0.5) +
+    coord_cartesian(ylim = c(0, 25)) +
+    scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 48), 
+                       breaks = c(seq(1, 12, by = 0.5), 24, 36, 48),
+                       labels = c(0, rep("", 21), 12, 24, 36, 48)) +
+    xlab("Time (Hours)") +
+    ylab("Seeds Remaining") +
+    theme(panel.grid.major.x = element_blank(),
+          panel.grid.major.y = element_line(colour = "gray90", size = 0.2),
+          panel.grid.minor.x = element_blank(),
+          panel.grid.minor.y = element_blank(),
+          panel.border = element_rect(colour = "black", fill = NA, size = 0.4),
+          panel.background = element_rect(fill = "white"),
+          axis.text.x = element_text(size = 5.5),
+          axis.text.y = element_text(size = 5.5),
+          axis.title.x = element_text(size = 6),
+          axis.title.y = element_text(size = 6),
+          axis.ticks = element_line(colour = "black", size = 0.4),
+          axis.ticks.length = unit(0.06, "cm"),
+          plot.margin = unit(c(0.01, 0.10, 0.08, 0.10), "cm")) -> graph
+  for(i in 2:8){
+    graph +
+      geom_point(data = time.means(dfAll[[i]]), aes(x = Time, y = Mean),
+                 colour = colourAll[i], size = 0.12) +
+      geom_line(data = time.means(dfAll[[i]]), aes(x = Time, y = Mean),
+                colour = colourAll[i], size = 0.5) -> graph}
+  
+  # Output graph
+  return(graph)}  
+
+# List of formatted timesteps for text
+tlist <- c(expression(paste(~italic("t"), " = ", 6)),
+           expression(paste(~italic("t"), " = ", 12)),
+           expression(paste(~italic("t"), " = ", 24)))
+tlistc <- c(expression(paste("CN, ", ~italic("t"), " = ", 6)),
+            expression(paste("CN, ", ~italic("t"), " = ", 12)),
+            expression(paste("CN, ", ~italic("t"), " = ", 24)),
+            expression(paste("CA, ", ~italic("t"), " = ", 6)),
+            expression(paste("CA, ", ~italic("t"), " = ", 12)),
+            expression(paste("CA, ", ~italic("t"), " = ", 24)))
+
+# Prepare graphics device
+tiff(filename = "Figure S3.tif", width = 2800, height = 3200, units = "px", res = 800, compression = "lzw")
+
+# Create blank page
+grid.newpage()
+plot.new()
+
+# Set grid layout and activate it
+gly <- grid.layout(1600, 1400)
+pushViewport(viewport(layout = gly))
+
+# Plot survival curves
+# Error bars excluded for plotting clarity
+print(surv.plotsAll(Data_List, PlotColours_All),
+      vp = viewport(layout.pos.row = 25:1575, layout.pos.col = 25:1375))
+
+# Create legend
+grid.text(label = c("CN W E+ [1]", "CN W E- [2]", "CN NW E+ [3]", "CN NW E- [4]",
+                    "CA W E+ [5]", "CA W E- [6]", "CA NW E+ [7]", "CA NW E- [8]"), x = rep(0.905, 8), 
+          y =  seq(0.945, 0.761, length.out = 8), hjust = rep(1, 8), gp = gpar(cex = 0.45))
+grid.text(label = c("1", "3", "7", "6", "5", "2", "8", "4"),
+          x = c(0.216, 0.312, 0.354, 0.395, 0.408, 0.443, 0.495, 0.546),
+          y = rep(0.420, 8), gp = gpar(cex = 0.45))
+grid.segments(x0 = rep(0.920, 8), y0 = seq(0.945, 0.761, length.out = 8), 
+              x1 = rep(0.937, 8), y1 = seq(0.945, 0.761, length.out = 8),
+              gp = gpar(col = PlotColours_All, lty = rep(1, 8), lwd = rep(1.1, 8)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()

@@ -89,9 +89,9 @@ c.alpha <- function(colour){
   return(newCol)}
 PlotColours <- sapply(c("darkgreen", "green", "blue", "red", "black", "grey"), c.alpha)
 PlotColours_All <- sapply(c("black", "darkblue", "dodgerblue", "darkorchid4",
-                            "purple", "red", "orange", "yellow2"), c.alpha)
+                            "purple", "red", "orange3", "yellow2"), c.alpha)
 
-# Function to plot survival curves
+# Function to plot 2 survival curves
 surv.plots <- function(df1, df2, colour1, colour2, bottom, left, atext){
   
   # Get p-value from K-S test
@@ -104,14 +104,12 @@ surv.plots <- function(df1, df2, colour1, colour2, bottom, left, atext){
   ggplot() +
     geom_point(data = time.means(df1), aes(x = Time, y = Mean), colour = colour1, size = 0.01) +
     geom_line(data = time.means(df1), aes(x = Time, y = Mean), colour = colour1, size = 0.25) +
-    geom_errorbar(data = time.means(df1), 
-                  aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM), width = 0.3, 
-                  colour = colour1, size = 0.2) +
+    geom_errorbar(data = time.means(df1), aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM),
+                  width = 0.3, colour = colour1, size = 0.2) +
     geom_point(data = time.means(df2), aes(x = Time, y = Mean), colour = colour2, size = 0.01) +
     geom_line(data = time.means(df2), aes(x = Time, y = Mean), colour = colour2, size = 0.25) +
-    geom_errorbar(data = time.means(df2), 
-                  aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM), width = 0.3, 
-                  colour = colour2, size = 0.2) +
+    geom_errorbar(data = time.means(df2), aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM),
+                  width = 0.3, colour = colour2, size = 0.2) +
     coord_cartesian(ylim = c(0, 25)) +
     scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 48), 
                        breaks = c(seq(1, 12, by = 0.5), 24, 36, 48),
@@ -157,17 +155,20 @@ surv.plots <- function(df1, df2, colour1, colour2, bottom, left, atext){
   # Output graph
   return(graph)}
 
-# Put individual dataframes into a list to plot all survival curves simultaneously
-Data_List <- list(Data_CN_YW_YE, Data_CN_YW_NE, Data_CN_NW_YE, Data_CN_NW_NE,
-                  Data_CA_YW_YE, Data_CA_YW_NE, Data_CA_NW_YE, Data_CA_NW_NE)
-    
-# Function to plot all survival curves simultaneously
-surv.plotsAll <- function(dfAll, colourAll){
+# Function to plot 4 survival curves
+# Note: no K-S test since there's more than 2 curves
+surv.plots4 <- function(df1, df2, df3, df4, colour1, colour2, colour3, colour4, bottom){
+  
+  # Put dataframes and colours into condensed lists
+  dfList <- list(df1, df2, df3, df4)
+  colList <- c(colour1, colour2, colour3, colour4)
   
   # Plot survival curves
   ggplot() +
-    geom_point(data = time.means(dfAll[[1]]), aes(x = Time, y = Mean), colour = colourAll[1], size = 0.3) +
-    geom_line(data = time.means(dfAll[[1]]), aes(x = Time, y = Mean), colour = colourAll[1], size = 0.5) +
+    geom_point(data = time.means(df1), aes(x = Time, y = Mean), colour = colList[1], size = 0.15) +
+    geom_line(data = time.means(df1), aes(x = Time, y = Mean), colour = colList[1], size = 0.5) +
+    geom_errorbar(data = time.means(df1), aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM),
+                  width = 0.3, colour = colList[1], size = 0.25) +
     coord_cartesian(ylim = c(0, 25)) +
     scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 48), 
                        breaks = c(seq(1, 12, by = 0.5), 24, 36, 48),
@@ -180,28 +181,30 @@ surv.plotsAll <- function(dfAll, colourAll){
           panel.grid.minor.y = element_blank(),
           panel.border = element_rect(colour = "black", fill = NA, size = 0.4),
           panel.background = element_rect(fill = "white"),
-          axis.text.x = element_text(size = 5.5),
-          axis.text.y = element_text(size = 5.5),
-          axis.title.x = element_text(size = 6),
-          axis.title.y = element_text(size = 6),
-          axis.ticks = element_line(colour = "black", size = 0.4),
-          axis.ticks.length = unit(0.06, "cm"),
-          plot.margin = unit(c(0.01, 0.10, 0.08, 0.10), "cm")) -> graph
-  for(i in 2:8){
+          axis.text.x = element_text(size = 4.5),
+          axis.text.y = element_text(size = 4.5),
+          axis.title.x = element_text(size = 5),
+          axis.title.y = element_text(size = 5),
+          axis.ticks = element_line(colour = "black", size = 0.2),
+          axis.ticks.length = unit(0.04, "cm")) -> graph
+  for(i in 2:4){
     graph +
-      geom_point(data = time.means(dfAll[[i]]), aes(x = Time, y = Mean), colour = colourAll[i], size = 0.12) +
-      geom_line(data = time.means(dfAll[[i]]), aes(x = Time, y = Mean), colour = colourAll[i], size = 0.5) -> graph}
+      geom_point(data = time.means(dfList[[i]]), aes(x = Time, y = Mean),
+                 colour = colList[i], size = 0.15) +
+      geom_line(data = time.means(dfList[[i]]), aes(x = Time, y = Mean),
+                colour = colList[i], size = 0.5) +
+      geom_errorbar(data = time.means(dfList[[i]]), aes(x = Time, ymin = Mean - SEM, ymax = Mean + SEM),
+                    width = 0.3, colour = colList[i], size = 0.25)-> graph}
+  
+  # Format graphs depending on panel placement
+  if(bottom == FALSE){
+    graph + theme(axis.ticks.x = element_blank(),
+                  axis.text.x = element_blank(),
+                  axis.title.x = element_blank(),
+                  plot.margin = unit(c(0.08, 0.03, 0.43, 0.06), "cm"))} -> graph
+  if(bottom == TRUE){
+    graph + theme(plot.margin = unit(c(0.01, 0.03, 0.08, 0.06), "cm"))} -> graph
   
   # Output graph
-  return(graph)}  
+  return(graph)}
 
-# List of formatted timesteps for text
-tlist <- c(expression(paste(~italic("t"), " = ", 6)),
-           expression(paste(~italic("t"), " = ", 12)),
-           expression(paste(~italic("t"), " = ", 24)))
-tlistc <- c(expression(paste("CN, ", ~italic("t"), " = ", 6)),
-            expression(paste("CN, ", ~italic("t"), " = ", 12)),
-            expression(paste("CN, ", ~italic("t"), " = ", 24)),
-            expression(paste("CA, ", ~italic("t"), " = ", 6)),
-            expression(paste("CA, ", ~italic("t"), " = ", 12)),
-            expression(paste("CA, ", ~italic("t"), " = ", 24)))
