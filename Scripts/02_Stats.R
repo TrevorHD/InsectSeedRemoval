@@ -93,7 +93,6 @@ qqnorm(Data_SM_CA_NW$Mass)
 qqline(Data_SM_CA_NW$Mass)
 
 # Seed mass between species is obviously different
-# Interesting since species effects on mixed model is not really significant
 # Suggests seed mass might be worth looking into, but is probably not sole factor
 bartlett.test(rbind(Data_SM_CN_W, Data_SM_CA_W)$Mass,
               rbind(Data_SM_CN_W, Data_SM_CA_W)$Species)
