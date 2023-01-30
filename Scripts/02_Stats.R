@@ -7,24 +7,14 @@
 1 - mean(Data$t_48)/25; sd(Data$t_48)/sqrt(length(Data$t_48))/25 # 48h
 
 # Proportion of seeds removed after a given time for warmed CN E+ [highest]
-1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_6)/25  # 6h
-1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_12)/25 # 12h
-1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_24)/25 # 24h
-1 - mean(filter(Data, Species == "CN", Warmed == 1, Elaiosome == 1)$t_48)/25 # 48h
+1 - mean(Data_CN_YW_YE$t_6)/25; sd(Data_CN_YW_YE$t_6)/sqrt(length(Data_CN_YW_YE$t_6))/25    # 6h
+1 - mean(Data_CN_YW_YE$t_12)/25; sd(Data_CN_YW_YE$t_12)/sqrt(length(Data_CN_YW_YE$t_12))/25 # 12h
+1 - mean(Data_CN_YW_YE$t_24)/25; sd(Data_CN_YW_YE$t_24)/sqrt(length(Data_CN_YW_YE$t_24))/25 # 24h
+1 - mean(Data_CN_YW_YE$t_48)/25; sd(Data_CN_YW_YE$t_48)/sqrt(length(Data_CN_YW_YE$t_48))/25 # 48h
 
-# Proportion of seeds removed after a given time for unwarmed CN E- [lowest]
-1 - mean(filter(Data, Species == "CN", Warmed == 0, Elaiosome == 0)$t_6)/25  # 6
-1 - mean(filter(Data, Species == "CN", Warmed == 0, Elaiosome == 0)$t_12)/25 # 12h
-1 - mean(filter(Data, Species == "CN", Warmed == 0, Elaiosome == 0)$t_24)/25 # 24h
-1 - mean(filter(Data, Species == "CN", Warmed == 0, Elaiosome == 0)$t_48)/25 # 48h
-
-# Proportion of seeds removed after a given time for unwarmed CA E- [lowest]
-1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_6)/25  # 6
-1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_12)/25 # 12h
-1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_24)/25 # 24h
-1 - mean(filter(Data, Species == "CA", Warmed == 0, Elaiosome == 0)$t_48)/25 # 48h
-
-# Note: unwarmed E- CN and CA have similarly low rates of removal, hence them both being included above
+# Proportion of seeds removed after 48h for unwarmed CN and CA E- [lowest]
+1 - mean(Data_CN_NW_NE$t_48)/25; sd(Data_CN_NW_NE$t_48)/sqrt(length(Data_CN_NW_NE$t_48))/25  # 6
+1 - mean(Data_CA_NW_NE$t_48)/25; sd(Data_CA_NW_NE$t_48)/sqrt(length(Data_CA_NW_NE$t_48))/25  # 6
 
 
 
