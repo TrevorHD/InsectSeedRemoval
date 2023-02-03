@@ -147,21 +147,21 @@ gly <- grid.layout(1000, 1200)
 pushViewport(viewport(layout = gly))
 
 # Marginal plots for Warmed:Elaiosome interaction (CN)
-print(plot_model(Fit6_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM6_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 1:450))
-print(plot_model(Fit12_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM12_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 450:825))
-print(plot_model(Fit24_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM24_CN, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 1:500, layout.pos.col = 825:1200))
 # Elaiosome removal consistently results in lower seed removal rates
 # Warming results in significant increase in removal rates at t=6 and t=24; significant interaction at t=12
 
 # Marginal plots for Warmed:Elaiosome interaction (CA)
-print(plot_model(Fit6_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM6_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t1, vp = viewport(layout.pos.row = 500:1000, layout.pos.col = 1:450))
-print(plot_model(Fit12_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM12_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 500:1000, layout.pos.col = 450:825))
-print(plot_model(Fit24_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
+print(plot_model(GLM24_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colors = c("green", "darkgreen")) +
         ip_m2 + ip_m3 + ip_t2, vp = viewport(layout.pos.row = 500:1000, layout.pos.col = 825:1200))
 # When there is no warming, seeds with elaiosomes are more likely to be removed
 # When warming is added, this difference mostly disappears; there is an obvious interaction

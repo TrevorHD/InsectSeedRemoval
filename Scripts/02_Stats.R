@@ -13,8 +13,8 @@
 1 - mean(Data_CN_YW_YE$t_48)/25; sd(Data_CN_YW_YE$t_48)/sqrt(length(Data_CN_YW_YE$t_48))/25 # 48h
 
 # Proportion of seeds removed after 48h for unwarmed CN and CA E- [lowest]
-1 - mean(Data_CN_NW_NE$t_48)/25; sd(Data_CN_NW_NE$t_48)/sqrt(length(Data_CN_NW_NE$t_48))/25  # 6
-1 - mean(Data_CA_NW_NE$t_48)/25; sd(Data_CA_NW_NE$t_48)/sqrt(length(Data_CA_NW_NE$t_48))/25  # 6
+1 - mean(Data_CN_NW_NE$t_48)/25; sd(Data_CN_NW_NE$t_48)/sqrt(length(Data_CN_NW_NE$t_48))/25
+1 - mean(Data_CA_NW_NE$t_48)/25; sd(Data_CA_NW_NE$t_48)/sqrt(length(Data_CA_NW_NE$t_48))/25
 
 
 
@@ -27,35 +27,35 @@
 # Models for 48 hours not fit due to convergence issues
 
 # Fit GLMs for seed removal at 6, 12, and 24 hours (CN)
-Fit6_CN <- glmer(cbind(25 - Data2_CN$t_6, Data2_CN$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome + (1 | Block),
-                 data = Data2_CN, family = "binomial")
-Fit12_CN <- glmer(cbind(Data2_CN$t_6 - Data2_CN$t_12, Data2_CN$t_12) ~ Warmed + Elaiosome + Warmed:Elaiosome +
-                    (1 | Block), data = Data2_CN, family = "binomial")
-Fit24_CN <- glmer(cbind(Data2_CN$t_12 - Data2_CN$t_24, Data2_CN$t_24) ~ Warmed + Elaiosome + Warmed:Elaiosome +
-                    (1 | Block), data = Data2_CN, family = "binomial")
+GLM6_CN <- glmer(cbind(25 - Data_GLM_CN$t_6, Data_GLM_CN$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                   (1 | Block), data = Data_GLM_CN, family = "binomial")
+GLM12_CN <- glmer(cbind(Data_GLM_CN$t_6 - Data_GLM_CN$t_12, Data_GLM_CN$t_12) ~ Warmed + Elaiosome +
+                    Warmed:Elaiosome + (1 | Block), data = Data_GLM_CN, family = "binomial")
+GLM24_CN <- glmer(cbind(Data_GLM_CN$t_12 - Data_GLM_CN$t_24, Data_GLM_CN$t_24) ~ Warmed + Elaiosome + 
+                    Warmed:Elaiosome + (1 | Block), data = Data_GLM_CN, family = "binomial")
 
 # Model selection performed on 12 and 24 hour models to minimise AIC (CN)
-#Fit12_CN <- glmer(cbind(Data2_CN$t_6 - Data2_CN$t_12, Data2_CN$t_12) ~ Elaiosome +
-#                    (1 | Block), data = Data2_CN, family = "binomial")
-#Fit24_CN <- glmer(cbind(Data2_CN$t_12 - Data2_CN$t_24, Data2_CN$t_24) ~ Warmed + Elaiosome +
-#                    (1 | Block), data = Data2_CN, family = "binomial")
+#GLM12_CN <- glmer(cbind(Data_GLM_CN$t_6 - Data_GLM_CN$t_12, Data_GLM_CN$t_12) ~ Elaiosome +
+#                    (1 | Block), data = Data_GLM_CN, family = "binomial")
+#GLM24_CN <- glmer(cbind(Data_GLM_CN$t_12 - Data_GLM_CN$t_24, Data_GLM_CN$t_24) ~ Warmed + Elaiosome +
+#                    (1 | Block), data = Data_GLM_CN, family = "binomial")
 
 # Fit GLMs for seed removal at 6, 12, and 24 hours (CA)
 # AIC already minimised on models, no need for step selection
-Fit6_CA <- glmer(cbind(25 - Data2_CA$t_6, Data2_CA$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome + (1 | Block),
-                 data = Data2_CA, family = "binomial")
-Fit12_CA <- glmer(cbind(Data2_CA$t_6 - Data2_CA$t_12, Data2_CA$t_12) ~ Warmed + Elaiosome + Warmed:Elaiosome +
-                    (1 | Block), data = Data2_CA, family = "binomial")
-Fit24_CA <- glmer(cbind(Data2_CA$t_12 - Data2_CA$t_24, Data2_CA$t_24) ~ Warmed + Elaiosome + Warmed:Elaiosome +
-                    (1 | Block), data = Data2_CA, family = "binomial")
+GLM6_CA <- glmer(cbind(25 - Data_GLM_CA$t_6, Data_GLM_CA$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome +
+                   (1 | Block), data = Data_GLM_CA, family = "binomial")
+GLM12_CA <- glmer(cbind(Data_GLM_CA$t_6 - Data_GLM_CA$t_12, Data_GLM_CA$t_12) ~ Warmed + Elaiosome +
+                    Warmed:Elaiosome + (1 | Block), data = Data_GLM_CA, family = "binomial")
+GLM24_CA <- glmer(cbind(Data_GLM_CA$t_12 - Data_GLM_CA$t_24, Data_GLM_CA$t_24) ~ Warmed + Elaiosome +
+                    Warmed:Elaiosome + (1 | Block), data = Data_GLM_CA, family = "binomial")
 
 # Check model summaries
-summary(Fit6_CN)
-summary(Fit12_CN)
-summary(Fit24_CN)
-summary(Fit6_CA)
-summary(Fit12_CA)
-summary(Fit24_CA)
+summary(GLM6_CN)
+summary(GLM12_CN)
+summary(GLM24_CN)
+summary(GLM6_CA)
+summary(GLM12_CA)
+summary(GLM24_CA)
 
 
 

@@ -19,12 +19,12 @@ Data[45, "t_24"] <- 15
 Data[64, "t_7.5"] <- 23
 Data[64, "t_11"] <- 10
 
-# Create copy of data with treatments and only a few key time points
-Data2 <- Data[, c(1:5, 18, 30, 31, 33)]
+# Create copy of data with treatments and only a few key time points for GLM
+Data_GLM <- Data[, c(1:5, 18, 30, 31, 33)]
 
 # Subset data by species for GLMs
-Data2_CN <- subset(Data2, Species == "CN")
-Data2_CA <- subset(Data2, Species == "CA")
+Data_GLM_CN <- subset(Data_GLM, Species == "CN")
+Data_GLM_CA <- subset(Data_GLM, Species == "CA")
 
 # Sort seed removal data into the eight different treatment groups for plotting
 Data_CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
