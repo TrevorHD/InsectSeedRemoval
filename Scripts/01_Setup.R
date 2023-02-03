@@ -9,38 +9,10 @@ library(survival)
 library(sjPlot)
 library(sjmisc)
 
-# Load data from local copy of CSV; handle NAs w/ midpoint
+# Load data from local copy of CSV
 Data <- read.csv("Data/SeedRemovalData.csv")
 Data_SM <- read.csv("Data/SeedMassData.csv")
 names(Data)[1] <- "Depot"
-Data <- Data[-29, ]
-Data[25, "t_24"] <- 14
-Data[45, "t_24"] <- 15
-Data[64, "t_7.5"] <- 23
-Data[64, "t_11"] <- 10
-
-# Create copy of data with treatments and only a few key time points for GLM
-Data_GLM <- Data[, c(1:5, 18, 30, 31, 33)]
-
-# Subset data by species for GLMs
-Data_GLM_CN <- subset(Data_GLM, Species == "CN")
-Data_GLM_CA <- subset(Data_GLM, Species == "CA")
-
-# Sort seed removal data into the eight different treatment groups for plotting
-Data_CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
-Data_CN_YW_NE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 0)
-Data_CN_NW_YE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 1)
-Data_CN_NW_NE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 0)
-Data_CA_YW_YE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 1)
-Data_CA_YW_NE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 0)
-Data_CA_NW_YE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 1)
-Data_CA_NW_NE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 0)
-
-# Sort seed mass data into warmed versus unwarmed groups for each species
-Data_SM_CN_W <- subset(Data_SM, Species == "CN" & Warmed == 1)
-Data_SM_CN_NW <- subset(Data_SM, Species == "CN" & Warmed == 0)
-Data_SM_CA_W <- subset(Data_SM, Species == "CA" & Warmed == 1)
-Data_SM_CA_NW <- subset(Data_SM, Species == "CA" & Warmed == 0)
 
 
 
@@ -211,6 +183,45 @@ surv.plots4 <- function(df1, df2, df3, df4, colour1, colour2, colour3, colour4, 
   
   # Output graph
   return(graph)}
+
+
+
+
+##### Prep data for plotting and model fits ---------------------------------------------------------------
+
+# Remove depot 29 since it was never used in the experiment (was damaged in transit)
+Data <- Data[-29, ]
+
+# Handle NAs in data sheet, caused by camera malfunctions
+# Numbers are backup in-situ "midpoint" counts intended to be happen halfway between photographs
+# Was usually closer to time of photograph, though, especially for 24, 36, and 48-hr marks
+Data[25, "t_24"] <- 14
+Data[45, "t_24"] <- 15
+Data[64, "t_7.5"] <- 23
+Data[64, "t_11"] <- 10
+
+# Create copy of data with treatments and only a few key time points for GLM
+Data_GLM <- Data[, c(1:5, 18, 30, 31, 33)]
+
+# Subset data by species for GLMs
+Data_GLM_CN <- subset(Data_GLM, Species == "CN")
+Data_GLM_CA <- subset(Data_GLM, Species == "CA")
+
+# Sort seed removal data into the eight different treatment groups for plotting
+Data_CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
+Data_CN_YW_NE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 0)
+Data_CN_NW_YE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 1)
+Data_CN_NW_NE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 0)
+Data_CA_YW_YE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 1)
+Data_CA_YW_NE <- subset(Data, Species == "CA" & Warmed == 1 & Elaiosome == 0)
+Data_CA_NW_YE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 1)
+Data_CA_NW_NE <- subset(Data, Species == "CA" & Warmed == 0 & Elaiosome == 0)
+
+# Sort seed mass data into warmed versus unwarmed groups for each species
+Data_SM_CN_W <- subset(Data_SM, Species == "CN" & Warmed == 1)
+Data_SM_CN_NW <- subset(Data_SM, Species == "CN" & Warmed == 0)
+Data_SM_CA_W <- subset(Data_SM, Species == "CA" & Warmed == 1)
+Data_SM_CA_NW <- subset(Data_SM, Species == "CA" & Warmed == 0)
 
 
 
