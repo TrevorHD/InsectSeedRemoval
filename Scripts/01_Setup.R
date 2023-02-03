@@ -22,7 +22,11 @@ Data[64, "t_11"] <- 10
 # Create copy of data with treatments and only a few key time points
 Data2 <- Data[, c(1:5, 18, 30, 31, 33)]
 
-# Sort seed removal data into the eight different treatment groups
+# Subset data by species for GLMs
+Data2_CN <- subset(Data2, Species == "CN")
+Data2_CA <- subset(Data2, Species == "CA")
+
+# Sort seed removal data into the eight different treatment groups for plotting
 Data_CN_YW_YE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 1)
 Data_CN_YW_NE <- subset(Data, Species == "CN" & Warmed == 1 & Elaiosome == 0)
 Data_CN_NW_YE <- subset(Data, Species == "CN" & Warmed == 0 & Elaiosome == 1)
@@ -207,4 +211,47 @@ surv.plots4 <- function(df1, df2, df3, df4, colour1, colour2, colour3, colour4, 
   
   # Output graph
   return(graph)}
+
+
+
+
+
+##### Convert data to format suitable for survival model functions ----------------------------------------
+
+# Construct concise representation of original dataset
+# ToD indicates time of death
+# Cens indicates censor status (1 = dead, 0 = censored and survived until end)
+for(i in 1:nrow(Data)){
+  if(i == 1){
+    df_main <- matrix(ncol = 7, nrow = 0)}
+  row_sub <- Data[i, ]
+  for(j in 7:ncol(Data)){
+    if(j == 7){
+      prevNum <- 25
+      df_sub <- matrix(ncol = 7, nrow = 0)}
+    curNum <- as.numeric(row_sub[j])
+    if(curNum < prevNum){
+      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 1),
+                                     nrow = prevNum - curNum, ncol = 7, byrow = TRUE))}
+    if(j == ncol(Data) & curNum > 0){
+      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 0),
+                                     nrow = curNum, ncol = 7, byrow = TRUE))}
+    prevNum <- curNum}
+  df_main <- rbind(df_main, df_sub)}
+df_main <- data.frame(df_main, stringsAsFactors = FALSE)
+names(df_main) <- c(names(Data)[1:5], "ToD", "Cens")
+df_main$Depot <- as.numeric(df_main$Depot)
+df_main$Block <- as.numeric(df_main$Block)
+df_main$Warmed <- as.numeric(df_main$Warmed)
+df_main$Elaiosome <- as.numeric(df_main$Elaiosome)
+df_main$ToD <- as.numeric(df_main$ToD)
+df_main$Cens <- as.numeric(df_main$Cens)
+DataAlt <- df_main
+
+# Remove temporary variables since they will no longer be used
+remove(df_main, df_sub, row_sub, curNum, prevNum, i, j)
+
+# Split data into CN and CA for separate models
+DataAlt_CA <- subset(DataAlt, Species == "CA")
+DataAlt_CN <- subset(DataAlt, Species == "CN")
 

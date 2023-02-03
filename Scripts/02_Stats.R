@@ -26,10 +26,6 @@
 # Response is vector of "successes" (seeds removed) and "failures" (seeds not removed)
 # Models for 48 hours not fit due to convergence issues
 
-# Subset data by species
-Data2_CN <- subset(Data2, Species == "CN")
-Data2_CA <- subset(Data2, Species == "CA")
-
 # Fit GLMs for seed removal at 6, 12, and 24 hours (CN)
 Fit6_CN <- glmer(cbind(25 - Data2_CN$t_6, Data2_CN$t_6) ~ Warmed + Elaiosome + Warmed:Elaiosome + (1 | Block),
                  data = Data2_CN, family = "binomial")
@@ -105,63 +101,40 @@ t.test(Data_SM_CN_NW$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = FA
 
 
 
-##### Compare qualitative GLM results with survival analysis [WIP] ----------------------------------------
+##### Qualitative compariosn of GLMs and survival regressions ---------------------------------------------
 
-# If survival analysis is similar, note this in the paper
-# GLM earlier is survival-style model where hazard functions are allowed to change over time
+# Some sort of accelerated failure model (increasing hazard over time) makes most sense
+# Will try exponential and Weibull
 
-# Construct concise representation of original dataset
-# ToD indicates time of death
-# Cens indicates censor status (1 = dead, 0 = censored and survived until end)
-for(i in 1:nrow(Data)){
-  if(i == 1){
-    df_main <- matrix(ncol = 7, nrow = 0)}
-  row_sub <- Data[i, ]
-  for(j in 7:ncol(Data)){
-    if(j == 7){
-      prevNum <- 25
-      df_sub <- matrix(ncol = 7, nrow = 0)}
-    curNum <- as.numeric(row_sub[j])
-    if(curNum < prevNum){
-      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 1),
-                                     nrow = prevNum - curNum, ncol = 7, byrow = TRUE))}
-    if(j == ncol(Data) & curNum > 0){
-      df_sub <- rbind(df_sub, matrix(c(as.character(row_sub[1:5]), str_remove(names(Data)[j], "t_"), 0),
-                                     nrow = curNum, ncol = 7, byrow = TRUE))}
-    prevNum <- curNum}
-  df_main <- rbind(df_main, df_sub)}
-df_main <- data.frame(df_main, stringsAsFactors = FALSE)
-names(df_main) <- c(names(Data)[1:5], "ToD", "Cens")
-df_main$Depot <- as.numeric(df_main$Depot)
-df_main$Block <- as.numeric(df_main$Block)
-df_main$Warmed <- as.numeric(df_main$Warmed)
-df_main$Elaiosome <- as.numeric(df_main$Elaiosome)
-df_main$ToD <- as.numeric(df_main$ToD)
-df_main$Cens <- as.numeric(df_main$Cens)
-DataAlt <- df_main
+# Note: preferred method frailty() for random effect in survival model does NOT work in survreg
+# Encoding random effect as (1|Block) also does not work; will thus encode as fixed effect
+# This is perfectly valid, just does not let us make numeric predictions outside context of experiment
 
-# Remove temporary variables since they will no longer be used
-remove(df_main, df_sub, row_sub, curNum, prevNum, i, j)
+# CA, exponential hazard
+Surv1_CA <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
+                    data = DataAlt_CA, dist = "exponential")
+summary(Surv1_CA)
 
-# Cox proportional hazard
-# Global p-value low, PH probably not good
-Surv1 <- coxph(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species  + Warmed:Elaiosome + Warmed:Species +
-                 Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
-summary(Surv1)
-cox.zph(Surv1)
-plot(cox.zph(Surv1))
+# CA, Weibull (default) hazard
+Surv2_CA <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
+                    data = DataAlt_CA)
+summary(Surv2_CA)
 
-# Accelerated failure/death - exponential hazard
-Surv2 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
-                   Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt, dist = "exponential")
-summary(Surv2)
-AIC(Surv2)
-step(Surv2)
+# CA results qualitatively similar to GLMs
+# Warming and elaiosome presence (both significant) increase rates of removal
+# Interaction effect (significant) dampens effects of both combined
 
-# Accelerated failure/death - Weibull hazard
-Surv3 <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Species + Warmed:Elaiosome + Warmed:Species +
-                   Elaiosome:Species + frailty.gaussian(Block, sparse = FALSE), data = DataAlt)
-summary(Surv3)
-AIC(Surv3)
-step(Surv3)
+# CN, exponential hazard
+Surv1_CN <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
+                    data = DataAlt_CN, dist = "exponential")
+summary(Surv1_CN)
+
+# CN, Weibull (default) hazard
+Surv2_CN <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
+                    data = DataAlt_CN)
+summary(Surv2_CN)
+
+# CN results qualitatively similar to GLMs
+# Warming and elaiosome presence (both significant) increase rates of removal
+# Interaction effect is not significant
 
