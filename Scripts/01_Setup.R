@@ -187,6 +187,7 @@ surv.plots4 <- function(df1, df2, df3, df4, colour1, colour2, colour3, colour4, 
 
 
 
+
 ##### Prep data for plotting and model fits ---------------------------------------------------------------
 
 # Remove depot 29 since it was never used in the experiment (was damaged in transit)

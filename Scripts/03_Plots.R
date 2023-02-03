@@ -36,7 +36,8 @@ grid.text(label = c("E+", "E-"), x = c(0.934, 0.934),
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
 grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
               x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
-              gp = gpar(col = c(PlotColours[1], PlotColours[2]), lty = rep(1, 2), lwd = rep(0.6, 2)))
+              gp = gpar(col = c(PlotColours[1], PlotColours[2]),
+                        lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -84,7 +85,8 @@ grid.text(label = c("Unwarmed", "Warmed"), x = c(0.934, 0.934),
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
 grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
               x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
-              gp = gpar(col = c(PlotColours[3], PlotColours[4]), lty = rep(1, 2), lwd = rep(0.6, 2)))
+              gp = gpar(col = c(PlotColours[3], PlotColours[4]),
+                        lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -121,9 +123,13 @@ grid.text(label = c("CN W E+", "CN W E-", "CN NW E+", "CN NW E-",
                     "CA W E+", "CA W E-", "CA NW E+", "CA NW E-"), x = rep(0.940, 8), 
           y =  c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))),
                  hjust = rep(1, 8), gp = gpar(cex = 0.45))
-grid.segments(x0 = rep(0.950, 8), y0 = c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))), 
-              x1 = rep(0.965, 8), y1 = c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))),
-              gp = gpar(col = c(PlotColours_All[1], PlotColours_All[3], PlotColours_All[5], PlotColours_All[7]), lty = rep(1, 8), lwd = rep(1.1, 8)))
+grid.segments(x0 = rep(0.950, 8), y0 = c(seq(0.968, 0.908, length.out = 4),
+                                         c(seq(0.468, 0.408, length.out = 4))), 
+              x1 = rep(0.965, 8), y1 = c(seq(0.968, 0.908, length.out = 4),
+                                         c(seq(0.468, 0.408, length.out = 4))),
+              gp = gpar(col = c(PlotColours_All[1], PlotColours_All[3],
+                                PlotColours_All[5], PlotColours_All[7]),
+                        lty = rep(1, 8), lwd = rep(1.1, 8)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -168,14 +174,17 @@ print(plot_model(GLM24_CA, type = "pred", terms = c("Warmed", "Elaiosome"), colo
 # Warming drastically increases chance of removal E- seeds, but not really for E+
 
 # Create plot labels
-grid.text(label = tlistc, x = rep(seq(0.34, 0.966, length.out = 3), 2), y = c(rep(0.950, 3), rep(0.450, 3)),
+grid.text(label = tlistc, x = rep(seq(0.34, 0.966, length.out = 3), 2),
+          y = c(rep(0.950, 3), rep(0.450, 3)),
           hjust = rep(1, 6), gp = gpar(cex = 0.3))
 
 # Create legend
 grid.text(label = c("E+", "E-"), x = rep(0.132, 2),  y = c(0.950, 0.925), hjust = rep(0, 2),
           gp = gpar(cex = 0.3))
-grid.segments(x0 = rep(0.109, 2), y0 = c(0.950, 0.925), x1 = rep(0.125, 2), y1 = c(0.950, 0.925),
-              gp = gpar(col = c(PlotColours[1], PlotColours[2]), lty = rep(1, 2), lwd = rep(1.1, 2)))
+grid.segments(x0 = rep(0.109, 2), y0 = c(0.950, 0.925),
+              x1 = rep(0.125, 2), y1 = c(0.950, 0.925),
+              gp = gpar(col = c(PlotColours[1], PlotColours[2]),
+                        lty = rep(1, 2), lwd = rep(1.1, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
@@ -223,7 +232,8 @@ grid.text(label = c("CN", "CA"), x = c(0.934, 0.934),
           y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
 grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
               x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
-              gp = gpar(col = c(PlotColours[5], PlotColours[6]), lty = rep(1, 2), lwd = rep(0.6, 2)))
+              gp = gpar(col = c(PlotColours[5], PlotColours[6]),
+                        lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()

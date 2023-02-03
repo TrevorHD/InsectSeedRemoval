@@ -78,8 +78,8 @@ ip_m1 <- scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 1),
                             breaks = c(0, 1), labels = c("E-", "E+"))
 ip_m2 <- scale_x_continuous(expand = c(0.01, 0.01), limits = c(0, 1), 
                             breaks = c(0, 1), labels = c("NW", "W"))
-ip_m3 <- scale_y_continuous(name = "Probability of Removal", expand = c(0.01, 0.01), limits = c(0, 1), 
-                            breaks = seq(0, 1, by = 0.1))
+ip_m3 <- scale_y_continuous(name = "Probability of Removal", expand = c(0.01, 0.01),
+                            limits = c(0, 1), breaks = seq(0, 1, by = 0.1))
 
 # Marginal plots for Elaiosome:Species interaction  
 print(plot_model(Fit6, type = "pred", terms = c("Elaiosome", "Species"), colors = c("grey", "black")) +
