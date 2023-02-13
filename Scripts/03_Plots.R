@@ -110,7 +110,6 @@ gly <- grid.layout(1600, 1400)
 pushViewport(viewport(layout = gly))
 
 # Plot survival curves
-# Error bars excluded for plotting clarity
 print(surv.plots4(Data_CN_NW_NE, Data_CN_NW_YE, Data_CN_YW_NE, Data_CN_YW_YE,
                   PlotColours_All[1], PlotColours_All[3], PlotColours_All[5], PlotColours_All[7], TRUE),
       vp = viewport(layout.pos.row = 25:775, layout.pos.col = 25:1375))
@@ -119,8 +118,8 @@ print(surv.plots4(Data_CA_NW_NE, Data_CA_NW_YE, Data_CA_YW_NE, Data_CA_YW_YE,
       vp = viewport(layout.pos.row = 825:1575, layout.pos.col = 25:1375))
 
 # Create legend
-grid.text(label = c("CN W E+", "CN W E-", "CN NW E+", "CN NW E-",
-                    "CA W E+", "CA W E-", "CA NW E+", "CA NW E-"), x = rep(0.940, 8), 
+grid.text(label = c("CN NW E-", "CN NW E+", "CN W E-", "CN W E+",
+                    "CA NW E-", "CA NW E+", "CA W E-", "CA W E+"), x = rep(0.940, 8), 
           y =  c(seq(0.968, 0.908, length.out = 4), c(seq(0.468, 0.408, length.out = 4))),
                  hjust = rep(1, 8), gp = gpar(cex = 0.45))
 grid.segments(x0 = rep(0.950, 8), y0 = c(seq(0.968, 0.908, length.out = 4),
