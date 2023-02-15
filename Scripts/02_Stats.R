@@ -114,11 +114,13 @@ t.test(Data_SM_CN_NW$Mass, Data_SM_CA_NW$Mass, alt = "two.sided", var.equal = FA
 Surv1_CA <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
                     data = DataAlt_CA, dist = "exponential")
 summary(Surv1_CA)
+AIC(Surv1_CA)
 
 # CA, Weibull (default) hazard
 Surv2_CA <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
                     data = DataAlt_CA)
 summary(Surv2_CA)
+AIC(Surv2_CA)
 
 # CA results qualitatively similar to GLMs
 # Warming and elaiosome presence (both significant) increase rates of removal
@@ -128,11 +130,13 @@ summary(Surv2_CA)
 Surv1_CN <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
                     data = DataAlt_CN, dist = "exponential")
 summary(Surv1_CN)
+AIC(Surv1_CN)
 
 # CN, Weibull (default) hazard
 Surv2_CN <- survreg(Surv(ToD, Cens) ~ Warmed + Elaiosome + Warmed:Elaiosome + as.factor(Block),
                     data = DataAlt_CN)
 summary(Surv2_CN)
+AIC(Surv2_CN)
 
 # CN results qualitatively similar to GLMs
 # Warming and elaiosome presence (both significant) increase rates of removal
