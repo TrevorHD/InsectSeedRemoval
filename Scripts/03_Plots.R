@@ -138,7 +138,56 @@ dev.off()
 
 
 
-##### [FS4] Marginal effect plots for interactions (species separate) -------------------------------------
+##### [FS4] Plot CN vs CA survival curve ------------------------------------------------------------------
+
+# Prepare graphics device
+tiff(filename = "Figure S5.tif", width = 2800, height = 2000, units = "px", res = 800, compression = "lzw")
+
+# Create blank page
+grid.newpage()
+plot.new()
+
+# Set grid layout and activate it
+gly <- grid.layout(1000, 1400)
+pushViewport(viewport(layout = gly))
+
+# E+ Unwarmed: CN (black) v CA (grey)
+print(surv.plots(Data_CA_NW_YE, Data_CN_NW_YE, PlotColours[5], PlotColours[6],
+                 bottom = FALSE, left = TRUE, atext = "E+ Unwarmed"),
+      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
+
+# E+ Warmed: CN (black) v CA (grey)
+print(surv.plots(Data_CA_YW_YE, Data_CN_YW_YE, PlotColours[5], PlotColours[6],
+                 bottom = TRUE, left = TRUE, atext = "E+ Warmed"),
+      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
+
+# E- Unwarmed: CN (black) v CA (grey)
+print(surv.plots(Data_CA_NW_NE, Data_CN_NW_NE, PlotColours[5], PlotColours[6],
+                 bottom = FALSE, left = FALSE, atext = "E- Unwarmed"),
+      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
+
+# E- Warmed: CN (black) v CA (grey)
+print(surv.plots(Data_CA_YW_NE, Data_CN_YW_NE, PlotColours[5], PlotColours[6],
+                 bottom = TRUE, left = FALSE, atext = "E- Warmed"),
+      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
+
+# Create legend
+grid.text(label = c("CN", "CA"), x = c(0.934, 0.934), 
+          y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
+grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
+              x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
+              gp = gpar(col = c(PlotColours[5], PlotColours[6]),
+                        lty = rep(1, 2), lwd = rep(0.6, 2)))
+
+# Deactivate grid layout; finalise graphics save
+popViewport()
+dev.off()
+
+
+
+
+
+##### [FS5] Marginal effect plots for interactions (species separate) -------------------------------------
 
 # Prepare graphics device
 tiff(filename = "FigureS3.tif", width = 2400, height = 2000, units = "px", res = 800, compression = "lzw")
@@ -184,55 +233,6 @@ grid.segments(x0 = rep(0.109, 2), y0 = c(0.950, 0.925),
               x1 = rep(0.125, 2), y1 = c(0.950, 0.925),
               gp = gpar(col = c(PlotColours[1], PlotColours[2]),
                         lty = rep(1, 2), lwd = rep(1.1, 2)))
-
-# Deactivate grid layout; finalise graphics save
-popViewport()
-dev.off()
-
-
-
-
-
-##### [FS5] Plot CN vs CA survival curve ------------------------------------------------------------------
-
-# Prepare graphics device
-tiff(filename = "Figure S5.tif", width = 2800, height = 2000, units = "px", res = 800, compression = "lzw")
-
-# Create blank page
-grid.newpage()
-plot.new()
-
-# Set grid layout and activate it
-gly <- grid.layout(1000, 1400)
-pushViewport(viewport(layout = gly))
-
-# E+ Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data_CA_NW_YE, Data_CN_NW_YE, PlotColours[5], PlotColours[6],
-                 bottom = FALSE, left = TRUE, atext = "E+ Unwarmed"),
-      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 25:700))
-
-# E+ Warmed: CN (black) v CA (grey)
-print(surv.plots(Data_CA_YW_YE, Data_CN_YW_YE, PlotColours[5], PlotColours[6],
-                 bottom = TRUE, left = TRUE, atext = "E+ Warmed"),
-      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 25:700))
-
-# E- Unwarmed: CN (black) v CA (grey)
-print(surv.plots(Data_CA_NW_NE, Data_CN_NW_NE, PlotColours[5], PlotColours[6],
-                 bottom = FALSE, left = FALSE, atext = "E- Unwarmed"),
-      vp = viewport(layout.pos.row = 25:500, layout.pos.col = 700:1375))
-
-# E- Warmed: CN (black) v CA (grey)
-print(surv.plots(Data_CA_YW_NE, Data_CN_YW_NE, PlotColours[5], PlotColours[6],
-                 bottom = TRUE, left = FALSE, atext = "E- Warmed"),
-      vp = viewport(layout.pos.row = 500:975, layout.pos.col = 700:1375))
-
-# Create legend
-grid.text(label = c("CN", "CA"), x = c(0.934, 0.934), 
-          y = c(0.887, 0.864), hjust = c(1, 1), gp = gpar(cex = 0.3))
-grid.segments(x0 = c(0.944, 0.944), y0 = c(0.886, 0.863), 
-              x1 = c(0.961, 0.961), y1 = c(0.886, 0.863),
-              gp = gpar(col = c(PlotColours[5], PlotColours[6]),
-                        lty = rep(1, 2), lwd = rep(0.6, 2)))
 
 # Deactivate grid layout; finalise graphics save
 popViewport()
