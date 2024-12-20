@@ -14,6 +14,24 @@ Ants and other insects are often a source of localized secondary dispersal for w
 
 **SeedMassData** *(.csv)* - Seed mass data, with each entry representing the mass (in grams) of a group of 20 seeds.
 
+## Figures
+
+**Figure 1** *(.pptx)* - An illustration of primary, secondary, and higher-order dispersal pathways for a hypothetical system of biotic and abiotic dispersal vectors.
+
+**Figure 2** *(.tif)* - Observed number of seeds remaining when elaiosome is present/absent, conditioned on species and warming treatment applied to the maternal plant. 
+
+**Figure 3** *(.tif)* - Observed number of seeds remaining when maternal plant is warmed/unwarmed, conditioned on species and elaiosome presence/absence.
+
+**Figure S1** *(.jpg)* - Photo of an ant visiting seed depot 34 during the day and removing a *C. acanthoides* seed with an elaiosome.
+
+**Figure S2** *(.jpg)* - Photo of a cricket visiting seed depot 21 during the evening and removing a *C. acanthoides* seed without an elaiosome.
+
+**Figure S3** *(.tif)* - Observed rates of seed removal for all four combinations of elaiosome presence/absence and warming treatment on the maternal plant, split by species.
+
+**Figure S4** *(.tif)* - Comparison between species of observed number of seeds remaining, conditioned on elaiosome presence and warming treatment applied to the maternal plant.
+
+**Figure S5** *(.tif)* - GLM marginal effect plots for each species at each of the three model timesteps. 
+
 ## Scripts
 
 **01_Setup** *(.R)* - Code used to load in data and define functions for analysis and plotting.
